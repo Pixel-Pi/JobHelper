@@ -17,17 +17,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                case R.id.navigation_planned:
+                    mTextMessage.setText(R.string.title_planned);
                     return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                case R.id.navigation_running:
+                    mTextMessage.setText(R.string.title_running);
                     return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
+                case R.id.navigation_done:
+                    mTextMessage.setText(R.string.title_done);
                     return true;
             }
-            return false;
+            return false; //TODO Activity oder Fragment wechseln
         }
 
     };
