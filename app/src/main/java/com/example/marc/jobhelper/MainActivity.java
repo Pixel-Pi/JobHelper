@@ -11,6 +11,11 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
 
+
+    //TODO Fragments für Geplant, laufend und erledigt anlegen
+    //TODO Seitenwechsel zwischen Fragments ermöglichen
+    //TODO Neuer Kontakt-Seite erstellen
+    //TODO Bestehende Einträge in Liste anzeigen
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
