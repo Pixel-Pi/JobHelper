@@ -3,4 +3,7 @@
     <string name="title_planned">Geplant</string>
     <string name="title_running">Laufend</string>
     <string name="title_done">Fertig</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
