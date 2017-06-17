@@ -1,12 +1,11 @@
-package com.example.marc.jobhelper;
+package com.example.marc.jobhelper.Model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by marc on 17.06.17.
+ * Speichert den Status der Bewerbung
  */
 
 public class ApplicationStatus {
@@ -53,24 +52,28 @@ public class ApplicationStatus {
     public void changeStatus(String _status, Date _date) {
         if(_date != null) _date = new Date();
         if(setStatus(_status)){
-            switch(_status){
-                case PLANNED:
-                    plannedDate = _date;
-                case SENT:
-                    sentDate = _date;
-                    return;
-                case INT_PLANNED:
-                    interviewDate = _date;
-                    return;
-                case INT_HELD:
-                    return;
-                case DENIED:
-                    denyDate = _date;
-                    return;
-                case ACCEPTED:
-                    acceptedDate = _date;
-                    return;
-            }
+                setDate(_date);
+        }
+    }
+
+    public void setDate(Date _date){
+        switch(status) {
+            case PLANNED:
+                plannedDate = _date;
+                return;
+            case SENT:
+                sentDate = _date;
+                return;
+            case INT_PLANNED:
+                interviewDate = _date;
+                return;
+            case INT_HELD:
+                return;
+            case DENIED:
+                denyDate = _date;
+                return;
+            case ACCEPTED:
+                acceptedDate = _date;
         }
     }
 
@@ -90,5 +93,9 @@ public class ApplicationStatus {
                 return acceptedDate;
         }
         return new Date(); //sollte nie passieren, IDE mault aber ohne.
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

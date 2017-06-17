@@ -1,19 +1,15 @@
-package com.example.marc.jobhelper;
-import java.util.ArrayList;
+package com.example.marc.jobhelper.Model;
 import java.util.List;
 
 import android.graphics.Bitmap;
-import android.provider.ContactsContract;
-import android.provider.Settings;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.marc.jobhelper.R;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private List<CompanyItem> mDataset;

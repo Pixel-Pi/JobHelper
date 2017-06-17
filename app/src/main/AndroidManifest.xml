@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".Controller.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EditCompany"
+            android:name=".Controller.EditCompany"
             android:label="@string/title_activity_edit_company"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

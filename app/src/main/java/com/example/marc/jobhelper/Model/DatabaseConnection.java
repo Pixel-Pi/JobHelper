@@ -1,11 +1,15 @@
-package com.example.marc.jobhelper;
+package com.example.marc.jobhelper.Model;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Created by marc on 17.06.17.
+ * Stellt den Zugriffspunkt in die Datenbank für persistente Datenspeicherung dar.
+ * Erstellt von Marc am 17.06.17.
  */
 
 public class DatabaseConnection extends SQLiteOpenHelper {
@@ -26,6 +30,17 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+    }
+
+    public List<Company> loadNecessaryInformation(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<Company> companies = new ArrayList<>();
+
+        //TODO Name, Job-titel, Status & evtl. Datum in die ArrayList laden.
+
+        db.close();
+        return companies;
 
     }
 }

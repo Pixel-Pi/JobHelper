@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.marc.jobhelper.EditCompany"
+    tools:context="com.example.marc.jobhelper.Controller.EditCompany"
     tools:showIn="@layout/activity_edit_company">
 
 </android.support.v4.widget.NestedScrollView>
