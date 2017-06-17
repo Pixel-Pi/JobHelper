@@ -66,7 +66,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(List<CompanyItem> myDataset) {
-        System.out.println(myDataset + "");
         mDataset = myDataset;
     }
 

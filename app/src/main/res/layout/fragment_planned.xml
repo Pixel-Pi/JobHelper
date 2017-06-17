@@ -5,12 +5,6 @@
     android:layout_height="match_parent"
     tools:context="planned">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/title_planned" />
-
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
