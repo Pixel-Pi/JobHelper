@@ -1,6 +1,11 @@
 package com.example.marc.jobhelper.Model;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.List;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.marc.jobhelper.Controller.MainActivity;
 import com.example.marc.jobhelper.R;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
@@ -50,11 +57,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         private String JobTitle;
         private String Status;
 
-        public CompanyItem(Bitmap _img, String _CompName, String _JobTitle, String _Status){
-            img = _img;
+        public CompanyItem(String imgLink, String _CompName, String _JobTitle, String _Status){
             CompanyName = _CompName;
             JobTitle = _JobTitle;
             Status = _Status;
+            if(imgLink == null)return;
+            if(imgLink.equals("")) return;
+            try{
+                FileInputStream fis = new FileInputStream(imgLink);
+                BufferedInputStream bis = new BufferedInputStream(fis);
+                ObjectInputStream ois = new ObjectInputStream(bis);
+                img = (Bitmap) ois.readObject();
+            }
+            catch(Exception ex){
+                Toast.makeText(MainActivity.getAppContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
 
 

@@ -1,5 +1,6 @@
 package com.example.marc.jobhelper.Controller;
 
+import android.content.Context;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -13,11 +14,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.marc.jobhelper.Model.Company;
+import com.example.marc.jobhelper.Model.DatabaseConnection;
 import com.example.marc.jobhelper.R;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
+    private static Context context;
     //TODO Fragments für Geplant, laufend und erledigt anlegen
     //TODO Seitenwechsel zwischen Fragments ermöglichen
     //TODO Neuer Kontakt-Seite erstellen
@@ -59,15 +64,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MainActivity.context = getApplicationContext();
         setContentView(R.layout.activity_main);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Intent i = new Intent(getApplicationContext(), EditCompany.class);
+                i.putExtra("ID", DatabaseConnection.DEFAULT_ID);
                 startActivity(i);
             }
         });
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_running);
@@ -78,4 +86,7 @@ public class MainActivity extends AppCompatActivity {
         trans.commit();
     }
 
+    public static Context getAppContext() {
+        return MainActivity.context;
+    }
 }
