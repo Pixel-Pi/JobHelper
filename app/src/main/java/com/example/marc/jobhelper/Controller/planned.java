@@ -10,7 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 
+import com.example.marc.jobhelper.Model.ApplicationStatus;
+import com.example.marc.jobhelper.Model.Company;
+import com.example.marc.jobhelper.Model.DatabaseConnection;
 import com.example.marc.jobhelper.Model.MyAdapter;
 import com.example.marc.jobhelper.R;
 
@@ -42,13 +46,21 @@ public class planned extends Fragment implements AdapterView.OnItemClickListener
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
+        List<Company> companies = DatabaseConnection.getInstance(getContext()).loadAllCompaines();
         List<MyAdapter.CompanyItem> myData = new ArrayList<>();
         MyAdapter.CompanyItem tempItem;
-        for(int i = 0; i < 10; i++){
-            tempItem = new MyAdapter.CompanyItem(null, "Company "+ i, "JobTitle "+ i, "Geplant");
-            myData.add(tempItem);
+        if(companies != null) {
+            for (Company c : companies) {
+                if (c.getStatus() == ApplicationStatus.PLANNED) {
+                    tempItem = new MyAdapter.CompanyItem(c.loadBitmap(), c.getCompanyName(), c.getJobTitle(), getString(R.string.title_planned));
+                    myData.add(tempItem);
+                }
+            }
         }
-
+        else {
+                tempItem = new MyAdapter.CompanyItem(null, "Keine Einträge", "JobTitle", "Geplant");
+                myData.add(tempItem);
+        }
         MyAdapter adapter = new MyAdapter(myData);
         recyclerView.setAdapter(adapter);
         return view;

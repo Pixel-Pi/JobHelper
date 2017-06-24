@@ -1,8 +1,14 @@
 package com.example.marc.jobhelper.Model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.net.Uri;
 
+import com.example.marc.jobhelper.Controller.MainActivity;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Locale;
 
@@ -18,18 +24,20 @@ public class Company {
     private ApplicationStatus status = new ApplicationStatus();
     private android.location.Address address = new Address(Locale.getDefault());
     private String contactPerson = "Ansprechpartner";
-    private android.location.Address website = new Address(Locale.getDefault());
+    private String website = "http://google.com";
     private String phone = "0873 376461";
-    private Uri imgUri;
+    private Uri imgUri = null;
 
-    public Company(String _companyName, String _jobTitle, String _status, Date _date, String _address, String _contactPerson, String _website, String _phone){
+    public Company(){}
+    public Company(String _companyName, String _jobTitle, String _status, Date _date, String _address, String _contactPerson, Uri _website, String _phone, Uri _imgUri){
         if(!_companyName.equals("")) companyName = _companyName;
         if(!_jobTitle.equals("")) jobTitle = _jobTitle;
         if(ApplicationStatus.availableStati.contains(_status)) status.changeStatus(_status, _date);
         address.setAddressLine(0, _address);
         if(!_contactPerson.equals("")) contactPerson = _contactPerson;
-        website.setUrl(_website);
+        website = _website.toString();
         if(!_phone.equals("")) phone = _phone;
+        imgUri = _imgUri;
     }
 
     public String getCompanyName(){
@@ -54,9 +62,7 @@ public class Company {
         return contactPerson;
     }
 
-    public String getWebsite(){
-        return website.getUrl();
-    }
+    public Uri getWebsite(){ return Uri.parse(website); }
 
     public String getPhone(){
         return phone;
@@ -66,7 +72,9 @@ public class Company {
 
     public void setCompanyName(String _companyName){ companyName = _companyName; }
 
-    public void setStatus(ApplicationStatus status) { this.status = status;  }
+    public void setStatus(String status) { this.status.setStatus(status);  }
+
+    public void setDate(Date date){ this.status.setDate(date);}
 
     public void setJobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
@@ -80,8 +88,8 @@ public class Company {
         this.contactPerson = contactPerson;
     }
 
-    public void setWebsite(String website) {
-        this.website.setUrl(website);
+    public void setWebsite(Uri website) {
+        this.website = website.toString();
     }
 
     public void setPhone(String phone) {
@@ -90,5 +98,15 @@ public class Company {
 
     public void setImgUri(Uri imgUri) {
         this.imgUri = imgUri;
+    }
+
+    public Bitmap loadBitmap(){
+        try {
+            final InputStream imageStream = MainActivity.getAppContext().getContentResolver().openInputStream(imgUri);
+            return BitmapFactory.decodeStream(imageStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

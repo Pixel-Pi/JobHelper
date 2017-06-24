@@ -3,6 +3,19 @@
     <string name="title_planned">Geplant</string>
     <string name="title_running">Laufend</string>
     <string name="title_completed">Fertig</string>
+    <string name="dateInput">Datum</string>
+    <string name="addressInput">Adresse</string>
+    <string name="contactInput">Ansprechpartner</string>
+    <string name="websiteInput">Website</string>
+    <string name="phoneInput">Telefon</string>
+    <string-array name="appStati">
+        <item>Geplant</item>
+        <item>Versendet</item>
+        <item>Gespräch geplant</item>
+        <item>Warte auf Antwort</item>
+        <item>Abgelehnt</item>
+        <item>Akzeptiert</item>
+    </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

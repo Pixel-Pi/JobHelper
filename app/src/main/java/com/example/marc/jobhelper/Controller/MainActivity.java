@@ -4,7 +4,9 @@ import android.content.Context;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.app.Fragment;
@@ -14,10 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.marc.jobhelper.Model.ApplicationStatus;
 import com.example.marc.jobhelper.Model.Company;
 import com.example.marc.jobhelper.Model.DatabaseConnection;
 import com.example.marc.jobhelper.R;
 
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -75,6 +79,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        //Beispieleinträge
+
+        DatabaseConnection dbc = DatabaseConnection.getInstance(context);
+        dbc.addCompany(new Company("Beispielfirma1", "Beispiel Job", ApplicationStatus.PLANNED, new Date(), "Addresse 1", "HansJürgen", Uri.parse("www.google.com"), "017621345", null));
+        dbc.addCompany(new Company("Beispielfirma2", "Beispiel Job", ApplicationStatus.INT_PLANNED, new Date(), "Addresse 2", "HansJürgen", Uri.parse("www.google.com"), "017621345", null));
+        dbc.addCompany(new Company("Beispielfirma3", "Beispiel Job", ApplicationStatus.DENIED, new Date(), "Addresse 3", "HansJürgen", Uri.parse("www.google.com"), "017621345", null));
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

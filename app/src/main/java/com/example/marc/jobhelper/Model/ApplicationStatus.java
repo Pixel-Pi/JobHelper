@@ -18,7 +18,7 @@ public class ApplicationStatus {
     public static final String DENIED = "denied";
     public static final String ACCEPTED = "accepted";
     protected static final String[] availStatiArr= new String[] {PLANNED, SENT, INT_PLANNED, INT_HELD, DENIED, ACCEPTED};
-    protected static final List<String> availableStati = Arrays.asList(availStatiArr);
+    public static final List<String> availableStati = Arrays.asList(availStatiArr);
     private Date plannedDate;
     private Date sentDate;
     private Date interviewDate;
@@ -38,7 +38,7 @@ public class ApplicationStatus {
         changeStatus(_status, _date);
     }
 
-    private boolean setStatus (String _status){
+    public boolean setStatus (String _status){
         for(String s : availableStati) {
             if (s.equals(_status)) {
                 status = _status;

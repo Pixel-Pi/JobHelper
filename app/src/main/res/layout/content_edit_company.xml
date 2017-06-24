@@ -8,4 +8,171 @@
     tools:context="com.example.marc.jobhelper.Controller.EditCompany"
     tools:showIn="@layout/activity_edit_company">
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="32dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:paddingEnd="16dp"
+            android:paddingStart="0dp">
+
+            <Spinner
+                android:id="@+id/statusSelect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.42" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/dateIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingStart="@dimen/icon_pad_start"
+                android:paddingEnd="@dimen/icon_pad_end"
+                app:srcCompat="@drawable/calendar_blank"
+                android:contentDescription="@string/dateInput" />
+
+            <EditText
+                android:id="@+id/dateInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="datetime"
+                android:hint="@string/dateInput" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/addressIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingStart="@dimen/icon_pad_start"
+                android:paddingEnd="@dimen/icon_pad_end"
+                android:contentDescription="@string/addressInput"
+                app:srcCompat="@drawable/domain" />
+
+            <EditText
+                android:id="@+id/addressInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPostalAddress"
+                android:hint="@string/addressInput" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/contactIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingStart="@dimen/icon_pad_start"
+                android:paddingEnd="@dimen/icon_pad_end"
+                android:contentDescription="@string/contactInput"
+                app:srcCompat="@drawable/account" />
+
+            <EditText
+                android:id="@+id/contactInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:hint="@string/contactInput" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/websiteIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingStart="@dimen/icon_pad_start"
+                android:paddingEnd="@dimen/icon_pad_end"
+                android:contentDescription="@string/websiteInput"
+                app:srcCompat="@drawable/web" />
+
+            <EditText
+                android:id="@+id/websiteInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textWebEditText"
+                android:hint="@string/websiteInput" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="16dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/phoneIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingStart="@dimen/icon_pad_start"
+                android:paddingEnd="@dimen/icon_pad_end"
+                android:contentDescription="@string/phoneInput"
+                app:srcCompat="@drawable/phone" />
+
+            <EditText
+                android:id="@+id/phoneInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="phone"
+                android:hint="@string/phoneInput" />
+
+        </LinearLayout>
+    </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

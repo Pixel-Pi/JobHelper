@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.util.List;
 
 import android.app.Application;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,10 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marc.jobhelper.Controller.EditCompany;
 import com.example.marc.jobhelper.Controller.MainActivity;
 import com.example.marc.jobhelper.R;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implements View.OnClickListener {
     private List<CompanyItem> mDataset;
 
     // Provide a reference to the views for each data item
@@ -57,21 +59,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         private String JobTitle;
         private String Status;
 
-        public CompanyItem(String imgLink, String _CompName, String _JobTitle, String _Status){
+        public CompanyItem(Bitmap _img, String _CompName, String _JobTitle, String _Status){
             CompanyName = _CompName;
             JobTitle = _JobTitle;
             Status = _Status;
-            if(imgLink == null)return;
-            if(imgLink.equals("")) return;
+            img = _img;
+            /**
+            if(imgLink == null || imgLink.equals(""))return;
             try{
-                FileInputStream fis = new FileInputStream(imgLink);
-                BufferedInputStream bis = new BufferedInputStream(fis);
-                ObjectInputStream ois = new ObjectInputStream(bis);
-                img = (Bitmap) ois.readObject();
+                img =
             }
             catch(Exception ex){
                 Toast.makeText(MainActivity.getAppContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
+             **/
         }
 
 
@@ -112,13 +113,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         holder.txtAppStatus.setText(mDataset.get(position).Status);
         if(mDataset.get(position).img != null) holder.img.setImageBitmap(mDataset.get(position).img);
 
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    //FIXME Get clicked Object and start EditCompany Intent
+    public void onClick(View v) {
+        final Intent i = new Intent(v.getContext(), EditCompany.class);
+        i.putExtra("ID", DatabaseConnection.DEFAULT_ID);
+        v.getContext().startActivity(i);
     }
 
 }
