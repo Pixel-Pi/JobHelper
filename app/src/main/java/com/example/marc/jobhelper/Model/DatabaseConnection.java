@@ -6,12 +6,16 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.provider.ContactsContract;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,7 +27,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "JobHelperDB";
     private static final String TABLE_NAME = "Companies";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String KEY_ID = "id";
     private static final String KEY_BLOB = "blob";
@@ -45,8 +49,10 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        String DeleteCompanyTable = "DROP TABLE IF EXISTS " + TABLE_NAME;
+        db.execSQL(DeleteCompanyTable);
         String CreateCompanyTable = "CREATE TABLE " + TABLE_NAME + " ( "
-                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_ID + " INTEGER PRIMARY KEY, "
                 + KEY_BLOB + " BLOB "
                 + ")";
         db.execSQL(CreateCompanyTable);
@@ -63,16 +69,18 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     public Company loadCompany(int index){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
+        if(index == DEFAULT_ID) return null;
         try {
             cursor = db.query(TABLE_NAME, COLUMNS, " " + KEY_ID + " = ?", new String[]{String.valueOf(index)}, null, null, null, null);
         }
         catch(android.database.CursorIndexOutOfBoundsException ex){}
 
         if(cursor != null)
-            cursor.moveToFirst();
+            if(!cursor.moveToFirst()) return null;
         else return null;
         byte[] blob = cursor.getBlob(cursor.getColumnIndex(KEY_BLOB));
-        String json = new String(blob);
+        byte[] cutBlob = Arrays.copyOfRange(blob, 0,  blob.length-1);
+        String json = new String(cutBlob);
         Gson gson = new Gson();
         cursor.close();
         return gson.fromJson(json, new TypeToken<Company>() {}.getType());
@@ -93,7 +101,9 @@ public class DatabaseConnection extends SQLiteOpenHelper {
             if(!cursor.moveToFirst()) return null;
             do{
                 byte[] blob = cursor.getBlob(cursor.getColumnIndex(KEY_BLOB));
-                String json = new String(blob);
+                byte[] cutBlob = Arrays.copyOfRange(blob, 0,  blob.length-1);
+                String json = new String(cutBlob);
+                System.out.println("JSON beim Laden aus DB: " + json);
                 Gson gson = new Gson();
                 tempCompany = gson.fromJson(json, new TypeToken<Company>(){}.getType()); //FIXME
                 companies.add(tempCompany);
@@ -111,6 +121,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         Gson gson = new Gson();
         ContentValues values = new ContentValues();
         for (Company tempCompany : companies) {
+            values.put(KEY_ID, tempCompany.getIndex());
             values.put(KEY_BLOB, gson.toJson(tempCompany).getBytes());
         }
 
@@ -123,6 +134,8 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Gson gson = new Gson();
         ContentValues values = new ContentValues();
+        System.out.println("JSON beim Spichern in DB: " + gson.toJson(company));
+        values.put(KEY_ID, company.getIndex());
         values.put(KEY_BLOB, gson.toJson(company));
         db.insert(TABLE_NAME, null, values);
         db.close();

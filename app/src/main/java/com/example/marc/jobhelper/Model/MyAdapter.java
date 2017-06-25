@@ -18,9 +18,10 @@ import android.widget.Toast;
 
 import com.example.marc.jobhelper.Controller.EditCompany;
 import com.example.marc.jobhelper.Controller.MainActivity;
+import com.example.marc.jobhelper.Listener.RecyclerViewClickListener;
 import com.example.marc.jobhelper.R;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implements View.OnClickListener {
+public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     private List<CompanyItem> mDataset;
 
     // Provide a reference to the views for each data item
@@ -58,12 +59,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
         private String CompanyName;
         private String JobTitle;
         private String Status;
+        private int index;
 
-        public CompanyItem(Bitmap _img, String _CompName, String _JobTitle, String _Status){
+        public CompanyItem(Bitmap _img, String _CompName, String _JobTitle, String _Status, int _index){
             CompanyName = _CompName;
             JobTitle = _JobTitle;
             Status = _Status;
             img = _img;
+            index = _index;
             /**
             if(imgLink == null || imgLink.equals(""))return;
             try{
@@ -109,6 +112,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
         });*/
         //TODO OnClickListener bei Konstruktor erstellen
         //TODO Alle Listener in eigene Klassen
+        holder.itemView.setOnClickListener(new RecyclerViewClickListener(position));
         holder.txtJobTitle.setText(mDataset.get(position).JobTitle);
         holder.txtAppStatus.setText(mDataset.get(position).Status);
         if(mDataset.get(position).img != null) holder.img.setImageBitmap(mDataset.get(position).img);
@@ -121,11 +125,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
         return mDataset.size();
     }
 
-    //FIXME Get clicked Object and start EditCompany Intent
-    public void onClick(View v) {
-        final Intent i = new Intent(v.getContext(), EditCompany.class);
-        i.putExtra("ID", DatabaseConnection.DEFAULT_ID);
-        v.getContext().startActivity(i);
-    }
+
 
 }

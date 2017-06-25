@@ -3,7 +3,10 @@
     <string name="title_planned">Geplant</string>
     <string name="title_running">Laufend</string>
     <string name="title_completed">Fertig</string>
+    <string name="jobTitleInput">Stellenbezeichnung</string>
     <string name="dateInput">Datum</string>
+    <string name="dateButton">Datum</string>
+    <string name="timeButton">Zeit</string>
     <string name="addressInput">Adresse</string>
     <string name="contactInput">Ansprechpartner</string>
     <string name="websiteInput">Website</string>
@@ -16,7 +19,12 @@
         <item>Abgelehnt</item>
         <item>Akzeptiert</item>
     </string-array>
-
+    <string name="editCompanyButton">Name ändern</string>
+    <string name="editLogoButton">Logo ändern</string>
+    <string name="deleteButton">Löschen</string>
+    <string name="enterCompanyName">Firmenname ändern</string>
+    <string name="save">Speichern</string>
+    <string name="discard">Verwerfen</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_edit_company">EditCompany</string>

@@ -1,9 +1,11 @@
 package com.example.marc.jobhelper.Controller;
 
+import android.Manifest;
 import android.content.Context;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -26,6 +28,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int READ_EXTERNAL_NUMBER = 1;
     private static Context context;
     //TODO Fragments für Geplant, laufend und erledigt anlegen
     //TODO Seitenwechsel zwischen Fragments ermöglichen
@@ -80,13 +83,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Beispieleinträge
+        int permissionCheck = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (!(permissionCheck == PackageManager.PERMISSION_GRANTED)) {
+            // User may have declined earlier, ask Android if we should show him a reason
+            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Company.setImagesAllowed(false);
+                // show an explanation to the user
+                // Good practise: don't block thread after the user sees the explanation, try again to request the permission.
+            } else {
+                // request the permission.
+                // CALLBACK_NUMBER is a integer constants
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_NUMBER);
+                // The callback method gets the result of the request.
+            }
+        } else {
+            Company.setImagesAllowed(true);// got permission use it
+        }
 
-        DatabaseConnection dbc = DatabaseConnection.getInstance(context);
+        //Beispieleinträge
+        /**DatabaseConnection dbc = DatabaseConnection.getInstance(context);
         dbc.addCompany(new Company("Beispielfirma1", "Beispiel Job", ApplicationStatus.PLANNED, new Date(), "Addresse 1", "HansJürgen", Uri.parse("www.google.com"), "017621345", null));
         dbc.addCompany(new Company("Beispielfirma2", "Beispiel Job", ApplicationStatus.INT_PLANNED, new Date(), "Addresse 2", "HansJürgen", Uri.parse("www.google.com"), "017621345", null));
         dbc.addCompany(new Company("Beispielfirma3", "Beispiel Job", ApplicationStatus.DENIED, new Date(), "Addresse 3", "HansJürgen", Uri.parse("www.google.com"), "017621345", null));
-
+**/
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_running);
@@ -95,6 +114,27 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction trans = FragMan.beginTransaction();
         trans.replace(R.id.content, fragment);
         trans.commit();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case READ_EXTERNAL_NUMBER: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, do your work....
+                    Company.setImagesAllowed(true);
+                } else {
+                    // permission denied
+                    Company.setImagesAllowed(false);
+                    // Disable the functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' statements for other permssions
+        }
     }
 
     public static Context getAppContext() {

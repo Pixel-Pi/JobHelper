@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.marc.jobhelper.Model.DatabaseConnection;
 import com.example.marc.jobhelper.Model.MyAdapter;
 import com.example.marc.jobhelper.R;
 
@@ -38,7 +39,7 @@ public class completed extends Fragment {
         List<MyAdapter.CompanyItem> myData = new ArrayList<>();
         MyAdapter.CompanyItem tempItem;
         for(int i = 0; i < 10; i++){
-            tempItem = new MyAdapter.CompanyItem(null, "Company "+ i, "JobTitle "+ i, "Beendet");
+            tempItem = new MyAdapter.CompanyItem(null, "Company "+ i, "JobTitle "+ i, "Beendet", DatabaseConnection.DEFAULT_ID);
             myData.add(tempItem);
         }
 

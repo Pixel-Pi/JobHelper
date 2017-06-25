@@ -1,20 +1,26 @@
 package com.example.marc.jobhelper.Controller;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import java.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.marc.jobhelper.Listener.DatePickerDialogListener;
 import com.example.marc.jobhelper.Model.ApplicationStatus;
 import com.example.marc.jobhelper.Model.Company;
 import com.example.marc.jobhelper.Model.DatabaseConnection;
@@ -29,10 +35,13 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
 
     private static final int SELECT_PHOTO = 1;
 
-    private static Company company;
+    public static final String DESCRIBABLE_KEY = "Toolbar";
 
+    private static Company company;
+    private static CollapsingToolbarLayout editCompanyToolbar;
     private static ImageView imageView;
-    private static EditText dateInput;
+    private static Button dateInputButton;
+    private static Button timeInputButton;
     private static EditText addressInput;
     private static EditText contactInput;
     private static EditText websiteInput;
@@ -55,22 +64,17 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
         final int index = i.getIntExtra("ID", DatabaseConnection.DEFAULT_ID);
 
         //TODO make "EditCompany" editable and show the Companies name
-        dateInput = (EditText) findViewById(R.id.dateInput); //TODO open Datepicker on click on EditTextfield
+        editCompanyToolbar = (CollapsingToolbarLayout) findViewById(R.id.editCompanyToolbar);
+        dateInputButton = (Button) findViewById(R.id.dateButton); //TODO open Datepicker on click on EditTextfield
+        timeInputButton = (Button) findViewById(R.id.timeButton);
         addressInput = (EditText) findViewById(R.id.addressInput);
         contactInput = (EditText) findViewById(R.id.contactInput);
         websiteInput = (EditText) findViewById(R.id.websiteInput);
         phoneInput = (EditText) findViewById(R.id.phoneInput);
         imageView = (ImageView) findViewById(R.id.companyLogo);
-        ImageButton pickImage = (ImageButton) findViewById(R.id.pick_img);
-        pickImage.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, SELECT_PHOTO);
-            }
-        });
+
+        editCompanyToolbar.setTitle("YOLO");
         if(index != DatabaseConnection.DEFAULT_ID) {
             DatabaseConnection dbc = DatabaseConnection.getInstance(MainActivity.getAppContext());
             company = dbc.loadCompany(index);
@@ -83,15 +87,25 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
                     Toast.makeText(MainActivity.getAppContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
-            dateInput.setText(company.getDate().toString());
+            dateInputButton.setText(SimpleDateFormat.getDateInstance().format(company.getDate()));
+            timeInputButton.setText(SimpleDateFormat.getTimeInstance().format(company.getDate()));
             addressInput.setText(company.getAddress());
             contactInput.setText(company.getContactPerson());
             websiteInput.setText(company.getWebsite().toString());
             phoneInput .setText(company.getPhone());
+
+
         }
         else company = new Company();
 
-
+        dateInputButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c = Calendar.getInstance();
+                DatePickerDialog dpd = new DatePickerDialog(v.getContext(), new DatePickerDialogListener(dateInputButton), c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+                dpd.show();
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +114,8 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
 
                 DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
                 Date convertedDate = new Date();
+                //TODO 1 Button for Date, 1 Button for Time
+                /**
                 try {
                     convertedDate = dateFormat.parse(dateInput.getText().toString());
                     company.setDate(convertedDate);
@@ -107,6 +123,7 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
                     System.err.println(dateInput.getText().toString());
                     e.printStackTrace();
                 }
+                 **/
                 company.setAddress(addressInput.getText().toString());;
                 company.setContactPerson(contactInput.getText().toString());
                 company.setWebsite(Uri.parse(websiteInput.getText().toString()));
@@ -127,6 +144,7 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
             case SELECT_PHOTO:
                 if(resultCode == RESULT_OK){
                     try {
+                        System.out.println(imageReturnedIntent.getData());
                         company.setImgUri(imageReturnedIntent.getData());
                         imageView.setImageBitmap(company.loadBitmap());
                     }
@@ -135,6 +153,36 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
                     }
                 }
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_edit_company, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.editCompanyButton) {
+            new EditCompanyTitlePopUp().show(getSupportFragmentManager(), getString(R.string.enterCompanyName));
+            return true;
+        }
+        else if(id == R.id.editLogoButton) {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+            return true;
+        }
+        else if(id == R.id.deleteButton){
+            DatabaseConnection.getInstance(getApplicationContext()).removeCompanyAtIndex(company.getIndex());
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -147,4 +195,6 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    public static CollapsingToolbarLayout getEditCompanyToolbar(){ return editCompanyToolbar; }
 }

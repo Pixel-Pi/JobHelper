@@ -15,12 +15,21 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+            android:id="@+id/editCompanyToolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
+            <ImageView
+                android:id="@+id/companyLogo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:srcCompat="?attr/colorPrimary" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -29,24 +38,8 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" >
 
-                <ImageButton
-                    android:id="@+id/changeCompanyName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@android:drawable/ic_menu_edit" />
+            </android.support.v7.widget.Toolbar>
 
-                <ImageButton
-                    android:id="@+id/pick_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/image" />
-                </android.support.v7.widget.Toolbar>
-
-            <ImageView
-                android:id="@+id/companyLogo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="?attr/colorPrimary" />
 
 
 

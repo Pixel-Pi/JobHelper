@@ -51,14 +51,16 @@ public class planned extends Fragment implements AdapterView.OnItemClickListener
         MyAdapter.CompanyItem tempItem;
         if(companies != null) {
             for (Company c : companies) {
-                if (c.getStatus() == ApplicationStatus.PLANNED) {
-                    tempItem = new MyAdapter.CompanyItem(c.loadBitmap(), c.getCompanyName(), c.getJobTitle(), getString(R.string.title_planned));
+                if (c.getStatus().equals(ApplicationStatus.PLANNED)) {
+                    System.out.println("Found a usable entry!" + c.getCompanyName());
+                    tempItem = new MyAdapter.CompanyItem(c.loadBitmap(), c.getCompanyName(), c.getJobTitle(), getString(R.string.title_planned), c.getIndex());
                     myData.add(tempItem);
                 }
+                else System.out.println("No usable entry: " + c.getCompanyName());
             }
         }
         else {
-                tempItem = new MyAdapter.CompanyItem(null, "Keine Einträge", "JobTitle", "Geplant");
+                tempItem = new MyAdapter.CompanyItem(null, "Keine Einträge", "JobTitle", "Geplant", DatabaseConnection.DEFAULT_ID);
                 myData.add(tempItem);
         }
         MyAdapter adapter = new MyAdapter(myData);

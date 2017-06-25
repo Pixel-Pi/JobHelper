@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.net.Uri;
+import android.widget.Toast;
 
 import com.example.marc.jobhelper.Controller.MainActivity;
 
@@ -19,6 +20,10 @@ import java.util.Locale;
 
 public class Company {
 
+    private static int NumberCompanies = 0;
+    private static boolean ImagesAllowed = true;
+
+    private int index;
     private String companyName = "Neue Firma";
     private String jobTitle  = "Neuer Job";
     private ApplicationStatus status = new ApplicationStatus();
@@ -26,9 +31,12 @@ public class Company {
     private String contactPerson = "Ansprechpartner";
     private String website = "http://google.com";
     private String phone = "0873 376461";
-    private Uri imgUri = null;
+    private String imgUri = "";
 
-    public Company(){}
+    public Company(){
+        index = NumberCompanies;
+        NumberCompanies++;
+    }
     public Company(String _companyName, String _jobTitle, String _status, Date _date, String _address, String _contactPerson, Uri _website, String _phone, Uri _imgUri){
         if(!_companyName.equals("")) companyName = _companyName;
         if(!_jobTitle.equals("")) jobTitle = _jobTitle;
@@ -37,7 +45,10 @@ public class Company {
         if(!_contactPerson.equals("")) contactPerson = _contactPerson;
         website = _website.toString();
         if(!_phone.equals("")) phone = _phone;
-        imgUri = _imgUri;
+        if(_imgUri != null)
+        imgUri = _imgUri.toString();
+        index = NumberCompanies;
+        NumberCompanies++;
     }
 
     public String getCompanyName(){
@@ -62,13 +73,17 @@ public class Company {
         return contactPerson;
     }
 
-    public Uri getWebsite(){ return Uri.parse(website); }
+    public String getWebsite(){ return website;}
+
+    public Uri getWebsiteUri(){ return Uri.parse(website); }
 
     public String getPhone(){
         return phone;
     }
 
-    public Uri getImgUri(){ return imgUri; }
+    public Uri getImgUri(){ return Uri.parse(imgUri); }
+
+    public int getIndex(){ return index;}
 
     public void setCompanyName(String _companyName){ companyName = _companyName; }
 
@@ -97,16 +112,23 @@ public class Company {
     }
 
     public void setImgUri(Uri imgUri) {
-        this.imgUri = imgUri;
+        this.imgUri = imgUri.toString();
     }
 
-    public Bitmap loadBitmap(){
-        try {
-            final InputStream imageStream = MainActivity.getAppContext().getContentResolver().openInputStream(imgUri);
-            return BitmapFactory.decodeStream(imageStream);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
+    public static void setImagesAllowed(boolean allowed){
+        ImagesAllowed = allowed;
+    }
+    public Bitmap loadBitmap() {
+        if (ImagesAllowed) {
+            try {
+                final InputStream imageStream = MainActivity.getAppContext().getContentResolver().openInputStream(Uri.parse(imgUri));
+                return BitmapFactory.decodeStream(imageStream);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
+        else Toast.makeText(MainActivity.getAppContext(), "Kein Zugriff auf SD-Karte für Bilder", Toast.LENGTH_LONG).show();
+        return null;
     }
 }
