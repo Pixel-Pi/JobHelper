@@ -40,7 +40,7 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
     public static final String DESCRIBABLE_KEY = "Toolbar";
 
     private static Company company;
-    private CollapsingToolbarLayout editCompanyToolbar;
+    private static CollapsingToolbarLayout editCompanyToolbar;
     private ImageView imageView;
     private EditText jobTitleInput;
     private Button dateInputButton;
@@ -211,4 +211,6 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    public static CollapsingToolbarLayout getEditCompanyToolbar(){ return editCompanyToolbar; }
 }

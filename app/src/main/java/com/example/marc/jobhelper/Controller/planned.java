@@ -34,6 +34,17 @@ public class planned extends Fragment implements AdapterView.OnItemClickListener
         // Required empty public constructor
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        reloadRecyclerView();
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        reloadRecyclerView();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +59,11 @@ public class planned extends Fragment implements AdapterView.OnItemClickListener
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
+        reloadRecyclerView();
+        return view;
+    }
+
+    public void reloadRecyclerView(){
         List<Company> companies = DatabaseConnection.getInstance(getContext()).loadAllCompaines();
         List<MyAdapter.CompanyItem> myData = new ArrayList<>();
         MyAdapter.CompanyItem tempItem;
@@ -62,8 +78,8 @@ public class planned extends Fragment implements AdapterView.OnItemClickListener
             }
         }
         else {
-                tempItem = new MyAdapter.CompanyItem(null, "Keine Einträge", "JobTitle", "Geplant", DatabaseConnection.DEFAULT_ID);
-                myData.add(tempItem);
+            tempItem = new MyAdapter.CompanyItem(null, "Keine Einträge", "JobTitle", "Geplant", DatabaseConnection.DEFAULT_ID);
+            myData.add(tempItem);
         }
         Collections.sort(myData, new Comparator<MyAdapter.CompanyItem>() {
             @Override
@@ -75,7 +91,6 @@ public class planned extends Fragment implements AdapterView.OnItemClickListener
         });
         MyAdapter adapter = new MyAdapter(myData);
         recyclerView.setAdapter(adapter);
-        return view;
     }
 
     @Override
