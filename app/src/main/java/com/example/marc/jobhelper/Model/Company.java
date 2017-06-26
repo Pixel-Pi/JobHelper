@@ -24,19 +24,20 @@ public class Company {
     private static boolean ImagesAllowed = true;
 
     private int index;
-    private String companyName = "Neue Firma";
-    private String jobTitle  = "Neuer Job";
+    private String companyName;
+    private String jobTitle;
     private ApplicationStatus status = new ApplicationStatus();
     private android.location.Address address = new Address(Locale.getDefault());
-    private String contactPerson = "Ansprechpartner";
-    private String website = "http://google.com";
-    private String phone = "0873 376461";
-    private String imgUri = "";
+    private String contactPerson;
+    private String website;
+    private String phone;
+    private String imgUri;
 
     public Company(){
         index = NumberCompanies;
         NumberCompanies++;
     }
+
     public Company(String _companyName, String _jobTitle, String _status, Date _date, String _address, String _contactPerson, Uri _website, String _phone, Uri _imgUri){
         if(!_companyName.equals("")) companyName = _companyName;
         if(!_jobTitle.equals("")) jobTitle = _jobTitle;
@@ -81,7 +82,9 @@ public class Company {
         return phone;
     }
 
-    public Uri getImgUri(){ return Uri.parse(imgUri); }
+    public Uri getImgUri(){
+        if(imgUri == null) return null;
+        return Uri.parse(imgUri); }
 
     public int getIndex(){ return index;}
 
@@ -119,6 +122,7 @@ public class Company {
         ImagesAllowed = allowed;
     }
     public Bitmap loadBitmap() {
+        if(imgUri == null) return null;
         if (ImagesAllowed) {
             try {
                 final InputStream imageStream = MainActivity.getAppContext().getContentResolver().openInputStream(Uri.parse(imgUri));

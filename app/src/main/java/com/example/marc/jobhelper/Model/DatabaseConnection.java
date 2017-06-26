@@ -77,7 +77,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
         if(cursor != null)
             if(!cursor.moveToFirst()) return null;
-        else return null;
         byte[] blob = cursor.getBlob(cursor.getColumnIndex(KEY_BLOB));
         byte[] cutBlob = Arrays.copyOfRange(blob, 0,  blob.length-1);
         String json = new String(cutBlob);
@@ -143,6 +142,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     public void removeCompanyAtIndex(int index){
         SQLiteDatabase db = this.getWritableDatabase();
+        System.out.println("Deleting Item Index No. " + index);
         db.delete(TABLE_NAME, KEY_ID + " = ?", new String[]{String.valueOf(index)});
         db.close();
     }

@@ -19,6 +19,8 @@ import com.example.marc.jobhelper.Model.MyAdapter;
 import com.example.marc.jobhelper.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -63,6 +65,14 @@ public class planned extends Fragment implements AdapterView.OnItemClickListener
                 tempItem = new MyAdapter.CompanyItem(null, "Keine Einträge", "JobTitle", "Geplant", DatabaseConnection.DEFAULT_ID);
                 myData.add(tempItem);
         }
+        Collections.sort(myData, new Comparator<MyAdapter.CompanyItem>() {
+            @Override
+            public int compare(MyAdapter.CompanyItem comp1, MyAdapter.CompanyItem comp2)
+            {
+
+                return  comp1.getIndex() - comp2.getIndex();
+            }
+        });
         MyAdapter adapter = new MyAdapter(myData);
         recyclerView.setAdapter(adapter);
         return view;

@@ -33,6 +33,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         public TextView txtJobTitle;
         public TextView txtAppStatus;
         public ImageView img;
+        public int index;
 
         public ViewHolder(View v) {
             super(v);
@@ -41,17 +42,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             txtAppStatus = (TextView) v.findViewById(R.id.application_status);
             img = (ImageView) v.findViewById(R.id.image_company);
         }
-    }
-
-    public void add(int position, CompanyItem item) {
-        mDataset.add(position, item);
-        notifyItemInserted(position);
-    }
-
-    public void remove(CompanyItem item) {
-        int position = mDataset.indexOf(item);
-        mDataset.remove(position);
-        notifyItemRemoved(position);
     }
 
     public static class CompanyItem {
@@ -67,16 +57,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             Status = _Status;
             img = _img;
             index = _index;
-            /**
-            if(imgLink == null || imgLink.equals(""))return;
-            try{
-                img =
-            }
-            catch(Exception ex){
-                Toast.makeText(MainActivity.getAppContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-             **/
         }
+
+        public int getIndex(){return index;}
 
 
     }
@@ -112,7 +95,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         });*/
         //TODO OnClickListener bei Konstruktor erstellen
         //TODO Alle Listener in eigene Klassen
-        holder.itemView.setOnClickListener(new RecyclerViewClickListener(position));
+        holder.itemView.setOnClickListener(new RecyclerViewClickListener(mDataset.get(position).getIndex()));
         holder.txtJobTitle.setText(mDataset.get(position).JobTitle);
         holder.txtAppStatus.setText(mDataset.get(position).Status);
         if(mDataset.get(position).img != null) holder.img.setImageBitmap(mDataset.get(position).img);

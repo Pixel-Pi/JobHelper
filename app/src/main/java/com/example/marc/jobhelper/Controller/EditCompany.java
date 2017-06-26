@@ -1,6 +1,7 @@
 package com.example.marc.jobhelper.Controller;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import java.util.Calendar;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.marc.jobhelper.Listener.DatePickerDialogListener;
+import com.example.marc.jobhelper.Listener.TimePickerDialogListener;
 import com.example.marc.jobhelper.Model.ApplicationStatus;
 import com.example.marc.jobhelper.Model.Company;
 import com.example.marc.jobhelper.Model.DatabaseConnection;
@@ -38,14 +40,15 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
     public static final String DESCRIBABLE_KEY = "Toolbar";
 
     private static Company company;
-    private static CollapsingToolbarLayout editCompanyToolbar;
-    private static ImageView imageView;
-    private static Button dateInputButton;
-    private static Button timeInputButton;
-    private static EditText addressInput;
-    private static EditText contactInput;
-    private static EditText websiteInput;
-    private static EditText phoneInput;
+    private CollapsingToolbarLayout editCompanyToolbar;
+    private ImageView imageView;
+    private EditText jobTitleInput;
+    private Button dateInputButton;
+    private Button timeInputButton;
+    private EditText addressInput;
+    private EditText contactInput;
+    private EditText websiteInput;
+    private EditText phoneInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +65,11 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
 
         Intent i = getIntent();
         final int index = i.getIntExtra("ID", DatabaseConnection.DEFAULT_ID);
+        System.out.println("Opened EditCompany with index " + index);
 
         //TODO make "EditCompany" editable and show the Companies name
         editCompanyToolbar = (CollapsingToolbarLayout) findViewById(R.id.editCompanyToolbar);
+        jobTitleInput = (EditText) findViewById(R.id.jobTitleInput);
         dateInputButton = (Button) findViewById(R.id.dateButton); //TODO open Datepicker on click on EditTextfield
         timeInputButton = (Button) findViewById(R.id.timeButton);
         addressInput = (EditText) findViewById(R.id.addressInput);
@@ -74,24 +79,23 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
         imageView = (ImageView) findViewById(R.id.companyLogo);
 
 
-        editCompanyToolbar.setTitle("YOLO");
+        editCompanyToolbar.setTitle("Neuer Eintrag");
         if(index != DatabaseConnection.DEFAULT_ID) {
             DatabaseConnection dbc = DatabaseConnection.getInstance(MainActivity.getAppContext());
             company = dbc.loadCompany(index);
             if(company == null) company = new Company();
             //TODO alle Textfelder mit infos beladen
-            if(company.getImgUri() != null) {
-                try {
-                    imageView.setImageBitmap(company.loadBitmap());
-                } catch (Exception ex) {
-                    Toast.makeText(MainActivity.getAppContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+            try {
+                imageView.setImageBitmap(company.loadBitmap());
+            } catch (Exception ex) {
+                Toast.makeText(MainActivity.getAppContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
+            jobTitleInput.setText(company.getJobTitle());
             dateInputButton.setText(SimpleDateFormat.getDateInstance().format(company.getDate()));
-            timeInputButton.setText(SimpleDateFormat.getTimeInstance().format(company.getDate()));
+            timeInputButton.setText(new SimpleDateFormat("HH:mm").format(company.getDate()));
             addressInput.setText(company.getAddress());
             contactInput.setText(company.getContactPerson());
-            websiteInput.setText(company.getWebsite().toString());
+            websiteInput.setText(company.getWebsite());
             phoneInput .setText(company.getPhone());
 
 
@@ -107,23 +111,32 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
             }
         });
 
+        timeInputButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c = Calendar.getInstance();
+                TimePickerDialog tpd = new TimePickerDialog(v.getContext(), new TimePickerDialogListener(timeInputButton), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE),true);
+                tpd.show();
+            }
+        });
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
+                company.setCompanyName(editCompanyToolbar.getTitle().toString());
+                company.setJobTitle(jobTitleInput.getText().toString());
+                DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
                 Date convertedDate = new Date();
                 //TODO 1 Button for Date, 1 Button for Time
-                /**
                 try {
-                    convertedDate = dateFormat.parse(dateInput.getText().toString());
+                    convertedDate = dateFormat.parse(dateInputButton.getText().toString() + " " + timeInputButton.getText().toString());
                     company.setDate(convertedDate);
                 } catch (ParseException e) {
-                    System.err.println(dateInput.getText().toString());
+                    System.err.println(dateInputButton.getText().toString());
                     e.printStackTrace();
                 }
-                 **/
                 company.setAddress(addressInput.getText().toString());;
                 company.setContactPerson(contactInput.getText().toString());
                 company.setWebsite(Uri.parse(websiteInput.getText().toString()));
@@ -133,6 +146,8 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
                 if(index != DatabaseConnection.DEFAULT_ID) dbc.removeCompanyAtIndex(index);
                 dbc.addCompany(company);
                 //TODO save all textfields into the Company variable
+
+                finish();
             }
         });
     }
@@ -180,6 +195,7 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
         }
         else if(id == R.id.deleteButton){
             DatabaseConnection.getInstance(getApplicationContext()).removeCompanyAtIndex(company.getIndex());
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -195,6 +211,4 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
-    public static CollapsingToolbarLayout getEditCompanyToolbar(){ return editCompanyToolbar; }
 }
