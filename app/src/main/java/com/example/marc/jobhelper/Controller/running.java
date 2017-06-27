@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.marc.jobhelper.Model.ApplicationStatus;
 import com.example.marc.jobhelper.Model.DatabaseConnection;
 import com.example.marc.jobhelper.Model.MyAdapter;
 import com.example.marc.jobhelper.R;
@@ -19,6 +20,7 @@ import java.util.List;
 public class running extends Fragment {
 
     RecyclerView recyclerView;
+    CompanyListLoaderTask task;
 
     public running() {
         // Required empty public constructor
@@ -37,16 +39,15 @@ public class running extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        List<MyAdapter.CompanyItem> myData = new ArrayList<>();
-        MyAdapter.CompanyItem tempItem;
-        for(int i = 0; i < 10; i++){
-            tempItem = new MyAdapter.CompanyItem(null, "Company "+ i, "JobTitle "+ i, "Läuft", DatabaseConnection.DEFAULT_ID);
-            myData.add(tempItem);
-        }
-
-        MyAdapter adapter = new MyAdapter(myData);
-        recyclerView.setAdapter(adapter);
+        reloadRecyclerView();
         return view;
+    }
+
+
+    public void reloadRecyclerView(){
+        task = new CompanyListLoaderTask(recyclerView);
+        String[] stati = {ApplicationStatus.SENT, ApplicationStatus.INT_PLANNED, ApplicationStatus.INT_HELD};
+        task.execute(stati);
     }
 
 }

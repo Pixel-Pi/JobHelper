@@ -1,23 +1,15 @@
 package com.example.marc.jobhelper.Model;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.List;
 
-import android.app.Application;
-import android.content.Intent;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.marc.jobhelper.Controller.EditCompany;
-import com.example.marc.jobhelper.Controller.MainActivity;
+import com.example.marc.jobhelper.Controller.BitmapLoaderTask;
 import com.example.marc.jobhelper.Listener.RecyclerViewClickListener;
 import com.example.marc.jobhelper.R;
 
@@ -45,18 +37,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     }
 
     public static class CompanyItem {
-        private Bitmap img;
+        private Uri imgUri;
         private String CompanyName;
         private String JobTitle;
         private String Status;
         private int index;
+        private Company company;
 
-        public CompanyItem(Bitmap _img, String _CompName, String _JobTitle, String _Status, int _index){
-            CompanyName = _CompName;
-            JobTitle = _JobTitle;
-            Status = _Status;
-            img = _img;
-            index = _index;
+        public CompanyItem(Company company){
+            this.company = company;
+            CompanyName = company.getCompanyName();
+            JobTitle = company.getJobTitle();
+            Status = company.getStatus();
+            imgUri = company.getImgUri();
+            index = company.getIndex();
         }
 
         public int getIndex(){return index;}
@@ -98,7 +92,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         holder.itemView.setOnClickListener(new RecyclerViewClickListener(mDataset.get(position).getIndex()));
         holder.txtJobTitle.setText(mDataset.get(position).JobTitle);
         holder.txtAppStatus.setText(mDataset.get(position).Status);
-        if(mDataset.get(position).img != null) holder.img.setImageBitmap(mDataset.get(position).img);
+        if(mDataset.get(position).imgUri != null && !mDataset.get(position).imgUri.equals("")){
+            BitmapLoaderTask task = new BitmapLoaderTask(holder.img, mDataset.get(position).company);
+            task.execute();
+        };
 
     }
 

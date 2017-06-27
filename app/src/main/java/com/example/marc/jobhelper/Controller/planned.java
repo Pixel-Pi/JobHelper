@@ -28,12 +28,12 @@ import java.util.List;
  */
 public class planned extends Fragment implements AdapterView.OnItemClickListener{
 
-   RecyclerView recyclerView;
+    RecyclerView recyclerView;
+    CompanyListLoaderTask task;
 
     public planned() {
         // Required empty public constructor
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -58,39 +58,13 @@ public class planned extends Fragment implements AdapterView.OnItemClickListener
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-
         reloadRecyclerView();
         return view;
     }
 
     public void reloadRecyclerView(){
-        List<Company> companies = DatabaseConnection.getInstance(getContext()).loadAllCompaines();
-        List<MyAdapter.CompanyItem> myData = new ArrayList<>();
-        MyAdapter.CompanyItem tempItem;
-        if(companies != null) {
-            for (Company c : companies) {
-                if (c.getStatus().equals(ApplicationStatus.PLANNED)) {
-                    System.out.println("Found a usable entry!" + c.getCompanyName());
-                    tempItem = new MyAdapter.CompanyItem(c.loadBitmap(), c.getCompanyName(), c.getJobTitle(), getString(R.string.title_planned), c.getIndex());
-                    myData.add(tempItem);
-                }
-                else System.out.println("No usable entry: " + c.getCompanyName());
-            }
-        }
-        else {
-            tempItem = new MyAdapter.CompanyItem(null, "Keine Einträge", "JobTitle", "Geplant", DatabaseConnection.DEFAULT_ID);
-            myData.add(tempItem);
-        }
-        Collections.sort(myData, new Comparator<MyAdapter.CompanyItem>() {
-            @Override
-            public int compare(MyAdapter.CompanyItem comp1, MyAdapter.CompanyItem comp2)
-            {
-
-                return  comp1.getIndex() - comp2.getIndex();
-            }
-        });
-        MyAdapter adapter = new MyAdapter(myData);
-        recyclerView.setAdapter(adapter);
+        task = new CompanyListLoaderTask(recyclerView);
+        task.execute(ApplicationStatus.PLANNED);
     }
 
     @Override

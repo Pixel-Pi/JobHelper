@@ -94,15 +94,12 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         List<Company> companies = new ArrayList<>();
         Company tempCompany;
         Cursor cursor = db.query(TABLE_NAME, COLUMNS, null, null, null, null, null, null);
-        System.out.println("cursor.moveToFirst: " + cursor.moveToFirst());
-        System.out.println("cursor.moveToNext: " + cursor.moveToNext());
         if(cursor != null){
             if(!cursor.moveToFirst()) return null;
             do{
                 byte[] blob = cursor.getBlob(cursor.getColumnIndex(KEY_BLOB));
                 byte[] cutBlob = Arrays.copyOfRange(blob, 0,  blob.length-1);
                 String json = new String(cutBlob);
-                System.out.println("JSON beim Laden aus DB: " + json);
                 Gson gson = new Gson();
                 tempCompany = gson.fromJson(json, new TypeToken<Company>(){}.getType()); //FIXME
                 companies.add(tempCompany);
@@ -133,7 +130,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Gson gson = new Gson();
         ContentValues values = new ContentValues();
-        System.out.println("JSON beim Spichern in DB: " + gson.toJson(company));
         values.put(KEY_ID, company.getIndex());
         values.put(KEY_BLOB, gson.toJson(company));
         db.insert(TABLE_NAME, null, values);
@@ -142,7 +138,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     public void removeCompanyAtIndex(int index){
         SQLiteDatabase db = this.getWritableDatabase();
-        System.out.println("Deleting Item Index No. " + index);
         db.delete(TABLE_NAME, KEY_ID + " = ?", new String[]{String.valueOf(index)});
         db.close();
     }

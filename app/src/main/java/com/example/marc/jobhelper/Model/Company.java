@@ -135,4 +135,6 @@ public class Company {
         else Toast.makeText(MainActivity.getAppContext(), "Kein Zugriff auf SD-Karte für Bilder", Toast.LENGTH_LONG).show();
         return null;
     }
+
+
 }

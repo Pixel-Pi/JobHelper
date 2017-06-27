@@ -65,7 +65,6 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
 
         Intent i = getIntent();
         final int index = i.getIntExtra("ID", DatabaseConnection.DEFAULT_ID);
-        System.out.println("Opened EditCompany with index " + index);
 
         //TODO make "EditCompany" editable and show the Companies name
         editCompanyToolbar = (CollapsingToolbarLayout) findViewById(R.id.editCompanyToolbar);
@@ -90,6 +89,7 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
             } catch (Exception ex) {
                 Toast.makeText(MainActivity.getAppContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
+            editCompanyToolbar.setTitle(company.getCompanyName());
             jobTitleInput.setText(company.getJobTitle());
             dateInputButton.setText(SimpleDateFormat.getDateInstance().format(company.getDate()));
             timeInputButton.setText(new SimpleDateFormat("HH:mm").format(company.getDate()));
@@ -159,7 +159,6 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
             case SELECT_PHOTO:
                 if(resultCode == RESULT_OK){
                     try {
-                        System.out.println(imageReturnedIntent.getData());
                         company.setImgUri(imageReturnedIntent.getData());
                         imageView.setImageBitmap(company.loadBitmap());
                     }

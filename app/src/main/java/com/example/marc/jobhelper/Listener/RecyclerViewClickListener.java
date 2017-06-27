@@ -14,7 +14,6 @@ public class RecyclerViewClickListener implements View.OnClickListener {
 
     private int index;
     public RecyclerViewClickListener(int index){
-        System.out.println("New RecyclerViewClickListener with index " + index);
         this.index = index;
     }
     //FIXME Get clicked Object and start EditCompany Intent
