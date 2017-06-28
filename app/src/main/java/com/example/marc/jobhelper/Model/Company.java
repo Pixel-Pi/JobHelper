@@ -3,12 +3,15 @@ package com.example.marc.jobhelper.Model;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.widget.Toast;
 
 import com.example.marc.jobhelper.Controller.MainActivity;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Locale;
@@ -23,6 +26,9 @@ public class Company {
     private static int NumberCompanies = 0;
     private static boolean ImagesAllowed = true;
 
+    private static final int WIDTH = 150;
+    private static final int HEIGHT = 150;
+
     private int index;
     private String companyName;
     private String jobTitle;
@@ -32,6 +38,7 @@ public class Company {
     private String website;
     private String phone;
     private String imgUri;
+    private String thumbnailUri;
 
     public Company(){
         index = NumberCompanies;
@@ -121,15 +128,47 @@ public class Company {
     public static void setImagesAllowed(boolean allowed){
         ImagesAllowed = allowed;
     }
-    public Bitmap loadBitmap() {
-        if(imgUri == null) return null;
+
+    public Bitmap loadThumbnail() {
+        System.out.println("Thumbnail path: " + thumbnailUri);
+        System.out.println("Image path: " + imgUri);
         if (ImagesAllowed) {
-            try {
-                final InputStream imageStream = MainActivity.getAppContext().getContentResolver().openInputStream(Uri.parse(imgUri));
-                return BitmapFactory.decodeStream(imageStream);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                return null;
+            if (thumbnailUri != null) {
+                try {
+                    final InputStream imageStream = MainActivity.getAppContext().getContentResolver().openInputStream(Uri.parse(thumbnailUri));
+                    return BitmapFactory.decodeStream(imageStream);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            } else {
+                if (imgUri == null) return null;
+                String fileName = MainActivity.getAppContext().getFilesDir() + companyName + "_Logo_thumbnail.png";
+                try (FileOutputStream out = new FileOutputStream(fileName)) {
+                    Bitmap resized = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imgUri), WIDTH, HEIGHT);
+                    resized.compress(Bitmap.CompressFormat.PNG, 90, out);
+                    thumbnailUri = fileName;
+                    return resized;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+
+            }
+        }
+        else Toast.makeText(MainActivity.getAppContext(), "Kein Zugriff auf SD-Karte für Bilder", Toast.LENGTH_LONG).show();
+        return null;
+    }
+    public Bitmap loadBitmap() {
+        if (ImagesAllowed) {
+            if (imgUri != null) {
+                try {
+                    final InputStream imageStream = MainActivity.getAppContext().getContentResolver().openInputStream(Uri.parse(imgUri));
+                    return BitmapFactory.decodeStream(imageStream);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
         }
         else Toast.makeText(MainActivity.getAppContext(), "Kein Zugriff auf SD-Karte für Bilder", Toast.LENGTH_LONG).show();

@@ -28,7 +28,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int READ_EXTERNAL_NUMBER = 1;
+    private static final int WRITE_EXTERNAL_NUMBER = 1;
     private static Context context;
     //TODO Fragments für Geplant, laufend und erledigt anlegen
     //TODO Seitenwechsel zwischen Fragments ermöglichen
@@ -83,17 +83,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        int permissionCheck = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permissionCheck = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        //FIXME Zugriffsberechtigung fixen
         if (!(permissionCheck == PackageManager.PERMISSION_GRANTED)) {
             // User may have declined earlier, ask Android if we should show him a reason
-            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 Company.setImagesAllowed(false);
                 // show an explanation to the user
                 // Good practise: don't block thread after the user sees the explanation, try again to request the permission.
             } else {
                 // request the permission.
                 // CALLBACK_NUMBER is a integer constants
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_NUMBER);
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_NUMBER);
                 // The callback method gets the result of the request.
             }
         } else {
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case READ_EXTERNAL_NUMBER: {
+            case WRITE_EXTERNAL_NUMBER: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

@@ -3,6 +3,8 @@
 package com.example.marc.jobhelper.Controller;
 
         import android.graphics.Bitmap;
+        import android.graphics.BitmapFactory;
+        import android.media.ThumbnailUtils;
         import android.os.AsyncTask;
         import android.widget.ImageView;
 
@@ -28,7 +30,10 @@ public class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {
     protected Bitmap doInBackground(String... args) {
         // params comes from the execute() call: params[0] is the url.
         //TODO Check for Thumbnails and create, if no thumbnail is available
-        return company.loadBitmap();
+
+
+
+        return company.loadThumbnail();
     }
 
     @Override
