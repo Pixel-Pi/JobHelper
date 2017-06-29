@@ -9,23 +9,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.marc.jobhelper.Model.ApplicationStatus;
-import com.example.marc.jobhelper.Model.DatabaseConnection;
-import com.example.marc.jobhelper.Model.MyAdapter;
 import com.example.marc.jobhelper.R;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class completed extends Fragment {
 
-    RecyclerView recyclerView;
-    CompanyListLoaderTask task;
+    private RecyclerView recyclerView;
+    private CompanyListLoaderTask task;
 
     public completed() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        reloadRecyclerView();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -33,12 +32,9 @@ public class completed extends Fragment {
 
         recyclerView = (RecyclerView)view.findViewById(R.id.list_completed);
 
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-
-        reloadRecyclerView();
         return view;
     }
 

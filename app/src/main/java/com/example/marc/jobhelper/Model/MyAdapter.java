@@ -1,4 +1,5 @@
 package com.example.marc.jobhelper.Model;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import android.net.Uri;
@@ -37,13 +38,25 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     }
 
     public static class CompanyItem {
-        private Uri imgUri;
-        private String CompanyName;
-        private String JobTitle;
-        private String Status;
+
         private int index;
         private Company company;
 
+        private String CompanyName;
+        private String JobTitle;
+        private String Status;
+        private Uri imgUri;
+
+        public CompanyItem(){
+            index = DatabaseConnection.DEFAULT_ID;
+            company = null;
+
+            CompanyName = "Keine Einträge";
+            JobTitle = "Hier tippen für neuen Eintrag";
+            Status = "";
+            imgUri = Uri.parse("");
+
+        }
         public CompanyItem(Company company){
             this.company = company;
             CompanyName = company.getCompanyName();
@@ -91,12 +104,27 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         //TODO Alle Listener in eigene Klassen
         holder.itemView.setOnClickListener(new RecyclerViewClickListener(mDataset.get(position).getIndex()));
         holder.txtJobTitle.setText(mDataset.get(position).JobTitle);
-        holder.txtAppStatus.setText(mDataset.get(position).Status);
-        if(mDataset.get(position).imgUri != null && !mDataset.get(position).imgUri.equals("")){
+
+        String statusString = "Fehler";
+        switch (mDataset.get(position).Status) {
+            case ApplicationStatus.PLANNED: statusString = "Geplant";
+                break;
+            case ApplicationStatus.SENT: statusString = "Bewerbung abgesendet";
+                break;
+            case ApplicationStatus.INT_PLANNED: statusString = "Interview geplant am " + SimpleDateFormat.getDateInstance().format(mDataset.get(position).company.getDate());
+                break;
+            case ApplicationStatus.INT_HELD: statusString = "Interview gehalten";
+                break;
+            case ApplicationStatus.DENIED: statusString = "Abgelehnt";
+                break;
+            case ApplicationStatus.ACCEPTED: statusString = "Akzeptiert";
+                break;
+        }
+        holder.txtAppStatus.setText(statusString);
+        if(!mDataset.get(position).imgUri.toString().equals("")){
             BitmapLoaderTask task = new BitmapLoaderTask(holder.img, mDataset.get(position).company);
             task.execute();
         };
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)

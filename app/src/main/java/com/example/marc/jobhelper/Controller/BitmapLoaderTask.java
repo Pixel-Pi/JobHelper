@@ -31,8 +31,7 @@ public class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {
         // params comes from the execute() call: params[0] is the url.
         //TODO Check for Thumbnails and create, if no thumbnail is available
 
-
-
+        if(company.getImgUri().toString().equals("")) return null;
         return company.loadThumbnail();
     }
 

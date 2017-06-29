@@ -78,21 +78,29 @@ public class ApplicationStatus {
     }
 
     public Date getDate() {
+        Date returnDate = null;
         switch(status) {
             case PLANNED:
-                return plannedDate;
+                returnDate = plannedDate;
+                break;
             case SENT:
-                return sentDate;
+                returnDate = sentDate;
+                break;
             case INT_PLANNED:
-                return interviewDate;
+                returnDate = interviewDate;
+                break;
             case INT_HELD:
-                return interviewDate;
+                returnDate = interviewDate;
+                break;
             case DENIED:
-                return denyDate;
+                returnDate = denyDate;
+                break;
             case ACCEPTED:
-                return acceptedDate;
+                returnDate = acceptedDate;
+                break;
         }
-        return new Date(); //sollte nie passieren, IDE mault aber ohne.
+        if(returnDate == null) returnDate = new Date();
+        return returnDate;
     }
 
     public String getStatus() {

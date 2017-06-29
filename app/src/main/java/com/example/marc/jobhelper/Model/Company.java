@@ -5,11 +5,14 @@ import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.ContactsContract;
 import android.widget.Toast;
 
 import com.example.marc.jobhelper.Controller.MainActivity;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -37,8 +40,8 @@ public class Company {
     private String contactPerson;
     private String website;
     private String phone;
-    private String imgUri;
-    private String thumbnailUri;
+    private String imgUri = "";
+    private String thumbnailUri = "";
 
     public Company(){
         index = NumberCompanies;
@@ -129,39 +132,70 @@ public class Company {
         ImagesAllowed = allowed;
     }
 
+    /**
+     * Creates a thumbnail.
+     * @return Thumbnail of imgUri
+     */
+    private Bitmap thumbnailCreator(){
+        if (imgUri.equals("")) return null;
+        System.out.println("Loading original Image and making Thumbnail");
+        String hiddenDirectory = ".JobHelperThumbnails/";
+        String fileName = hiddenDirectory + index + companyName + "_Logo_thumbnail.png";
+        File path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File imageFile = new File(path, fileName);
+        try{
+
+            if(imageFile.getParentFile().mkdirs()) new File(path, hiddenDirectory + ".nomedia").createNewFile();
+            imageFile.createNewFile();
+            FileOutputStream out = new FileOutputStream(imageFile, false);
+            final InputStream imageStream = MainActivity.getAppContext().getContentResolver().openInputStream(Uri.parse(imgUri));
+            Bitmap resized = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeStream(imageStream), WIDTH, HEIGHT);
+            resized.compress(Bitmap.CompressFormat.PNG, 90, out);
+            thumbnailUri = imageFile.getAbsolutePath();
+            System.out.println("ThumbnailPath: " + thumbnailUri);
+            DatabaseConnection.getInstance(MainActivity.getAppContext()).addCompany(this);
+            out.close();
+            return resized;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return this.loadBitmap();
+        }
+
+    }
+
+    /**
+     * Checks, if thumbnail is available. Then tries to load it. If it still fails, it recreates a thumbnail.
+     * @return Thumbnail, of if inevitable the full bitmap.
+     */
+
     public Bitmap loadThumbnail() {
         System.out.println("Thumbnail path: " + thumbnailUri);
         System.out.println("Image path: " + imgUri);
         if (ImagesAllowed) {
-            if (thumbnailUri != null) {
-                try {
-                    final InputStream imageStream = MainActivity.getAppContext().getContentResolver().openInputStream(Uri.parse(thumbnailUri));
-                    return BitmapFactory.decodeStream(imageStream);
-                } catch (FileNotFoundException e) {
+            if (!thumbnailUri.equals("")) {
+                System.out.println("Loading Thumbnail");
+                try(FileInputStream fis = new FileInputStream(thumbnailUri)){
+                    return BitmapFactory.decodeStream(fis);
+                } catch (Exception e) { //Loading thumbnail failed? Create a new one
                     e.printStackTrace();
-                    return null;
+                    return thumbnailCreator();
                 }
             } else {
-                if (imgUri == null) return null;
-                String fileName = MainActivity.getAppContext().getFilesDir() + companyName + "_Logo_thumbnail.png";
-                try (FileOutputStream out = new FileOutputStream(fileName)) {
-                    Bitmap resized = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imgUri), WIDTH, HEIGHT);
-                    resized.compress(Bitmap.CompressFormat.PNG, 90, out);
-                    thumbnailUri = fileName;
-                    return resized;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-
+                return thumbnailCreator();
             }
         }
         else Toast.makeText(MainActivity.getAppContext(), "Kein Zugriff auf SD-Karte für Bilder", Toast.LENGTH_LONG).show();
         return null;
     }
+
+    /**
+     * Loads the full Bitmap
+     * @return Logo of company
+     */
     public Bitmap loadBitmap() {
         if (ImagesAllowed) {
-            if (imgUri != null) {
+            if (!imgUri.equals("")) {
                 try {
                     final InputStream imageStream = MainActivity.getAppContext().getContentResolver().openInputStream(Uri.parse(imgUri));
                     return BitmapFactory.decodeStream(imageStream);

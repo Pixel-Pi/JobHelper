@@ -3,6 +3,7 @@ package com.example.marc.jobhelper.Controller;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+
 import java.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
@@ -69,7 +70,8 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
         //TODO make "EditCompany" editable and show the Companies name
         editCompanyToolbar = (CollapsingToolbarLayout) findViewById(R.id.editCompanyToolbar);
         jobTitleInput = (EditText) findViewById(R.id.jobTitleInput);
-        dateInputButton = (Button) findViewById(R.id.dateButton); //TODO open Datepicker on click on EditTextfield
+
+        dateInputButton = (Button) findViewById(R.id.dateButton);
         timeInputButton = (Button) findViewById(R.id.timeButton);
         addressInput = (EditText) findViewById(R.id.addressInput);
         contactInput = (EditText) findViewById(R.id.contactInput);
@@ -83,7 +85,6 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
             DatabaseConnection dbc = DatabaseConnection.getInstance(MainActivity.getAppContext());
             company = dbc.loadCompany(index);
             if(company == null) company = new Company();
-            //TODO alle Textfelder mit infos beladen
             try {
                 imageView.setImageBitmap(company.loadBitmap());
             } catch (Exception ex) {
@@ -91,6 +92,25 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
             }
             editCompanyToolbar.setTitle(company.getCompanyName());
             jobTitleInput.setText(company.getJobTitle());
+
+            int j = 0;
+            switch (company.getStatus()){
+                case ApplicationStatus.PLANNED: j=0;
+                    break;
+                case ApplicationStatus.SENT: j=1;
+                    break;
+                case ApplicationStatus.INT_PLANNED: j=2;
+                    break;
+                case ApplicationStatus.INT_HELD: j=3;
+                    break;
+                case ApplicationStatus.DENIED: j=4;
+                    break;
+                case ApplicationStatus.ACCEPTED: j=5;
+                    break;
+            }
+            spinner.setSelection(j);
+
+
             dateInputButton.setText(SimpleDateFormat.getDateInstance().format(company.getDate()));
             timeInputButton.setText(new SimpleDateFormat("HH:mm").format(company.getDate()));
             addressInput.setText(company.getAddress());
@@ -204,6 +224,8 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(company == null) return;
         company.setStatus(ApplicationStatus.availableStati.get(position));
+        dateInputButton.setText(SimpleDateFormat.getDateInstance().format(company.getDate()));
+        timeInputButton.setText(new SimpleDateFormat("HH:mm").format(company.getDate()));
     }
 
     @Override

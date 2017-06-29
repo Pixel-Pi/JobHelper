@@ -27,7 +27,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "JobHelperDB";
     private static final String TABLE_NAME = "Companies";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private static final String KEY_ID = "id";
     private static final String KEY_BLOB = "blob";
@@ -105,8 +105,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
                 companies.add(tempCompany);
             }while(cursor.moveToNext());
         }
-        //TODO Alle Companies in die ArrayList laden.
-
         db.close();
         return companies;
 
@@ -127,7 +125,8 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     }
 
     public void addCompany(Company company) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        this.removeCompanyAtIndex(company.getIndex());
+        SQLiteDatabase db = this.getWritableDatabase();
         Gson gson = new Gson();
         ContentValues values = new ContentValues();
         values.put(KEY_ID, company.getIndex());

@@ -45,6 +45,7 @@ public class CompanyListLoaderTask extends AsyncTask<String, Void, MyAdapter> {
                 }
             }
         }
+        if(myData.isEmpty()) myData.add(new MyAdapter.CompanyItem());
         Collections.sort(myData, new Comparator<MyAdapter.CompanyItem>() {
             @Override
             public int compare(MyAdapter.CompanyItem comp1, MyAdapter.CompanyItem comp2)
