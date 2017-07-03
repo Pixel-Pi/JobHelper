@@ -129,11 +129,16 @@ public class EditCompany extends AppCompatActivity {
 
         spinner.setOnItemSelectedListener(new SpinnerListener(company, dateInputButton, timeInputButton));
 
+
         dateInputButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Calendar c = Calendar.getInstance();
-                DatePickerDialog dpd = new DatePickerDialog(v.getContext(), new DatePickerDialogListener(dateInputButton), c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+                DateFormat year = new SimpleDateFormat("yyyy");
+                DateFormat month = new SimpleDateFormat("MM");
+                DateFormat day = new SimpleDateFormat("dd");
+                Date compDate = company.getDate();
+                DatePickerDialog dpd = new DatePickerDialog(v.getContext(), new DatePickerDialogListener(dateInputButton), Integer.parseInt(year.format(compDate)), Integer.parseInt(month.format(compDate)), Integer.parseInt(day.format(compDate)));
                 dpd.show();
             }
         });
@@ -142,7 +147,10 @@ public class EditCompany extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final Calendar c = Calendar.getInstance();
-                TimePickerDialog tpd = new TimePickerDialog(v.getContext(), new TimePickerDialogListener(timeInputButton), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE),true);
+                DateFormat hour = new SimpleDateFormat("HH");
+                DateFormat minute = new SimpleDateFormat("mm");
+                Date compDate = company.getDate();
+                TimePickerDialog tpd = new TimePickerDialog(v.getContext(), new TimePickerDialogListener(timeInputButton), Integer.parseInt(hour.format(compDate)), Integer.parseInt(minute.format(compDate)),true);
                 tpd.show();
             }
         });
@@ -156,7 +164,7 @@ public class EditCompany extends AppCompatActivity {
                 company.setJobTitle(jobTitleInput.getText().toString());
                 company.setStatus(ApplicationStatus.availableStati.get(spinner.getSelectedItemPosition()));
                 DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
-                Date convertedDate = new Date();
+                Date convertedDate;
                 try {
                     convertedDate = dateFormat.parse(dateInputButton.getText().toString() + " " + timeInputButton.getText().toString());
                     company.setDate(convertedDate);
@@ -164,7 +172,7 @@ public class EditCompany extends AppCompatActivity {
                     System.err.println(dateInputButton.getText().toString());
                     e.printStackTrace();
                 }
-                company.setAddress(addressInput.getText().toString());;
+                company.setAddress(addressInput.getText().toString());
                 company.setContactPerson(contactInput.getText().toString());
                 company.setWebsite(Uri.parse(websiteInput.getText().toString()));
                 company.setPhone(phoneInput.getText().toString());

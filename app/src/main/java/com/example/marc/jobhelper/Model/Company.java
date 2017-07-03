@@ -7,6 +7,7 @@ import android.location.Address;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.example.marc.jobhelper.Controller.MainActivity;
@@ -33,13 +34,13 @@ public class Company {
     private static final int HEIGHT = 150;
 
     private int index;
-    private String companyName;
-    private String jobTitle;
+    private String companyName = "";
+    private String jobTitle = "";
     private ApplicationStatus status = new ApplicationStatus();
     private android.location.Address address = new Address(Locale.getDefault());
-    private String contactPerson;
-    private String website;
-    private String phone;
+    private String contactPerson = "";
+    private String website = "";
+    private String phone = "";
     private String imgUri = "";
     private String thumbnailUri = "";
     private int contrastColor = Color.WHITE;
@@ -126,6 +127,7 @@ public class Company {
     }
 
     public void setImgUri(Uri imgUri) {
+        if(!this.imgUri.equals("")) this.deleteThumbnail();
         this.imgUri = imgUri.toString();
     }
 
@@ -167,14 +169,25 @@ public class Company {
 
     }
 
+    private boolean deleteThumbnail(){
+        if (!thumbnailUri.equals("")) {
+            File thumb = new File(thumbnailUri);
+            try {
+                return thumb.delete();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+
+            }
+        }
+        return true;
+    }
+
     /**
      * Checks, if thumbnail is available. Then tries to load it. If it still fails, it recreates a thumbnail.
      * @return Thumbnail, of if inevitable the full bitmap.
      */
 
     public Bitmap loadThumbnail() {
-        System.out.println("Thumbnail path: " + thumbnailUri);
-        System.out.println("Image path: " + imgUri);
         if (ImagesAllowed) {
             if (!thumbnailUri.equals("")) {
                 System.out.println("Loading Thumbnail");
