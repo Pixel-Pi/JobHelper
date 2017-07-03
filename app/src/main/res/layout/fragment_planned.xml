@@ -12,5 +12,13 @@
             android:id="@+id/list_planned"
             android:scrollbars="vertical"/>
 
+        <ProgressBar
+            android:id="@+id/plannedLoadingProgress"
+            android:indeterminateTint="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
+
 
 </android.support.design.widget.CoordinatorLayout>

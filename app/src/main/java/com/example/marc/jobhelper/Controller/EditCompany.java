@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 
 import java.util.Calendar;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -14,15 +15,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.marc.jobhelper.Listener.DatePickerDialogListener;
+import com.example.marc.jobhelper.Listener.SpinnerListener;
 import com.example.marc.jobhelper.Listener.TimePickerDialogListener;
 import com.example.marc.jobhelper.Model.ApplicationStatus;
 import com.example.marc.jobhelper.Model.Company;
@@ -34,16 +36,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class EditCompany extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class EditCompany extends AppCompatActivity {
 
     private static final int SELECT_PHOTO = 1;
 
     public static final String DESCRIBABLE_KEY = "Toolbar";
 
-    private static Company company;
-    private static CollapsingToolbarLayout editCompanyToolbar;
+    private Company company;
+    private CollapsingToolbarLayout editCompanyToolbar;
     private ImageView imageView;
+    private ProgressBar progressIndicator;
     private EditText jobTitleInput;
+    private Spinner spinner;
     private Button dateInputButton;
     private Button timeInputButton;
     private EditText addressInput;
@@ -58,16 +62,10 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Spinner spinner = (Spinner) findViewById(R.id.statusSelect);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.appStati, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
-
         Intent i = getIntent();
         final int index = i.getIntExtra("ID", DatabaseConnection.DEFAULT_ID);
 
-        //TODO make "EditCompany" editable and show the Companies name
+        progressIndicator = (ProgressBar) findViewById(R.id.imageLoadingProgress);
         editCompanyToolbar = (CollapsingToolbarLayout) findViewById(R.id.editCompanyToolbar);
         jobTitleInput = (EditText) findViewById(R.id.jobTitleInput);
 
@@ -79,6 +77,12 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
         phoneInput = (EditText) findViewById(R.id.phoneInput);
         imageView = (ImageView) findViewById(R.id.companyLogo);
 
+        spinner = (Spinner) findViewById(R.id.statusSelect);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.appStati, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+
 
         editCompanyToolbar.setTitle("Neuer Eintrag");
         if(index != DatabaseConnection.DEFAULT_ID) {
@@ -87,6 +91,7 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
             if(company == null) company = new Company();
             try {
                 imageView.setImageBitmap(company.loadBitmap());
+                editCompanyToolbar.setExpandedTitleColor(company.getContrastColor());
             } catch (Exception ex) {
                 Toast.makeText(MainActivity.getAppContext(), ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -122,6 +127,8 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
         }
         else company = new Company();
 
+        spinner.setOnItemSelectedListener(new SpinnerListener(company, dateInputButton, timeInputButton));
+
         dateInputButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,9 +154,9 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
 
                 company.setCompanyName(editCompanyToolbar.getTitle().toString());
                 company.setJobTitle(jobTitleInput.getText().toString());
+                company.setStatus(ApplicationStatus.availableStati.get(spinner.getSelectedItemPosition()));
                 DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
                 Date convertedDate = new Date();
-                //TODO 1 Button for Date, 1 Button for Time
                 try {
                     convertedDate = dateFormat.parse(dateInputButton.getText().toString() + " " + timeInputButton.getText().toString());
                     company.setDate(convertedDate);
@@ -165,7 +172,6 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
                 DatabaseConnection dbc = DatabaseConnection.getInstance(MainActivity.getAppContext());
                 if(index != DatabaseConnection.DEFAULT_ID) dbc.removeCompanyAtIndex(index);
                 dbc.addCompany(company);
-                //TODO save all textfields into the Company variable
 
                 finish();
             }
@@ -180,7 +186,8 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
                 if(resultCode == RESULT_OK){
                     try {
                         company.setImgUri(imageReturnedIntent.getData());
-                        imageView.setImageBitmap(company.loadBitmap());
+                        EditCompanyImageLoaderTask task = new EditCompanyImageLoaderTask(imageView, editCompanyToolbar, progressIndicator, company);
+                        task.execute();
                     }
                     catch(Exception ex){
                         ex.printStackTrace();
@@ -190,20 +197,16 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_edit_company, menu);
         return true;
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.editCompanyButton) {
-            new EditCompanyTitlePopUp().show(getSupportFragmentManager(), getString(R.string.enterCompanyName));
+            EditCompanyTitlePopUp popUp = new EditCompanyTitlePopUp();
+            popUp.show(getSupportFragmentManager(), getString(R.string.enterCompanyName));
             return true;
         }
         else if(id == R.id.editLogoButton) {
@@ -220,18 +223,7 @@ public class EditCompany extends AppCompatActivity implements AdapterView.OnItem
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(company == null) return;
-        company.setStatus(ApplicationStatus.availableStati.get(position));
-        dateInputButton.setText(SimpleDateFormat.getDateInstance().format(company.getDate()));
-        timeInputButton.setText(new SimpleDateFormat("HH:mm").format(company.getDate()));
+    public void setCompanyTitle(String title){
+        editCompanyToolbar.setTitle(title);
     }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-    public static CollapsingToolbarLayout getEditCompanyToolbar(){ return editCompanyToolbar; }
 }

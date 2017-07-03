@@ -2,11 +2,11 @@ package com.example.marc.jobhelper.Model;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Address;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.widget.Toast;
 
 import com.example.marc.jobhelper.Controller.MainActivity;
@@ -27,7 +27,7 @@ import java.util.Locale;
 public class Company {
 
     private static int NumberCompanies = 0;
-    private static boolean ImagesAllowed = true;
+    private static boolean ImagesAllowed = false;
 
     private static final int WIDTH = 150;
     private static final int HEIGHT = 150;
@@ -42,6 +42,7 @@ public class Company {
     private String phone;
     private String imgUri = "";
     private String thumbnailUri = "";
+    private int contrastColor = Color.WHITE;
 
     public Company(){
         index = NumberCompanies;
@@ -86,8 +87,6 @@ public class Company {
 
     public String getWebsite(){ return website;}
 
-    public Uri getWebsiteUri(){ return Uri.parse(website); }
-
     public String getPhone(){
         return phone;
     }
@@ -96,7 +95,9 @@ public class Company {
         if(imgUri == null) return null;
         return Uri.parse(imgUri); }
 
-    public int getIndex(){ return index;}
+    public int getIndex(){ return index; }
+
+    public int getContrastColor(){ return contrastColor; }
 
     public void setCompanyName(String _companyName){ companyName = _companyName; }
 
@@ -127,6 +128,8 @@ public class Company {
     public void setImgUri(Uri imgUri) {
         this.imgUri = imgUri.toString();
     }
+
+    public void setContrastColor(int contrastColor) { this.contrastColor = contrastColor; }
 
     public static void setImagesAllowed(boolean allowed){
         ImagesAllowed = allowed;
@@ -208,6 +211,4 @@ public class Company {
         else Toast.makeText(MainActivity.getAppContext(), "Kein Zugriff auf SD-Karte für Bilder", Toast.LENGTH_LONG).show();
         return null;
     }
-
-
 }

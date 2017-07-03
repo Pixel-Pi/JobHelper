@@ -17,7 +17,7 @@ public class ApplicationStatus {
     public static final String INT_HELD = "interviewHeld";
     public static final String DENIED = "denied";
     public static final String ACCEPTED = "accepted";
-    protected static final String[] availStatiArr= new String[] {PLANNED, SENT, INT_PLANNED, INT_HELD, DENIED, ACCEPTED};
+    private static final String[] availStatiArr= new String[] {PLANNED, SENT, INT_PLANNED, INT_HELD, DENIED, ACCEPTED};
     public static final List<String> availableStati = Arrays.asList(availStatiArr);
     private Date plannedDate;
     private Date sentDate;
@@ -25,20 +25,20 @@ public class ApplicationStatus {
     private Date denyDate;
     private Date acceptedDate;
 
-    public ApplicationStatus(){
+    ApplicationStatus(){
         status = PLANNED;
         plannedDate = new Date();
     }
 
-    public ApplicationStatus(String _status){
+    protected ApplicationStatus(String _status){
         setStatus(_status);
     }
 
-    public ApplicationStatus(String _status, Date _date){
+    protected ApplicationStatus(String _status, Date _date){
         changeStatus(_status, _date);
     }
 
-    public boolean setStatus (String _status){
+    boolean setStatus (String _status){
         for(String s : availableStati) {
             if (s.equals(_status)) {
                 status = _status;
@@ -49,14 +49,14 @@ public class ApplicationStatus {
         return false;
     }
 
-    public void changeStatus(String _status, Date _date) {
+    void changeStatus(String _status, Date _date) {
         if(_date != null) _date = new Date();
         if(setStatus(_status)){
                 setDate(_date);
         }
     }
 
-    public void setDate(Date _date){
+    void setDate(Date _date){
         switch(status) {
             case PLANNED:
                 plannedDate = _date;
@@ -77,7 +77,7 @@ public class ApplicationStatus {
         }
     }
 
-    public Date getDate() {
+    Date getDate() {
         Date returnDate = null;
         switch(status) {
             case PLANNED:
@@ -103,7 +103,7 @@ public class ApplicationStatus {
         return returnDate;
     }
 
-    public String getStatus() {
+    String getStatus() {
         return status;
     }
 }

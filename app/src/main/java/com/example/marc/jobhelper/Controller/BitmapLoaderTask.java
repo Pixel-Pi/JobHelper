@@ -3,8 +3,6 @@
 package com.example.marc.jobhelper.Controller;
 
         import android.graphics.Bitmap;
-        import android.graphics.BitmapFactory;
-        import android.media.ThumbnailUtils;
         import android.os.AsyncTask;
         import android.widget.ImageView;
 
@@ -21,22 +19,17 @@ public class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {
     private  Company company;
 
     public BitmapLoaderTask(ImageView imageView, Company company) {
-        imageViewReference = new WeakReference<ImageView>(imageView);
+        imageViewReference = new WeakReference<>(imageView);
         this.company = company;
     }
 
     @Override
-    // Actual download method, run in the task thread
     protected Bitmap doInBackground(String... args) {
-        // params comes from the execute() call: params[0] is the url.
-        //TODO Check for Thumbnails and create, if no thumbnail is available
-
         if(company.getImgUri().toString().equals("")) return null;
         return company.loadThumbnail();
     }
 
     @Override
-    // Once the image is downloaded, associates it to the imageView
     protected void onPostExecute(Bitmap bitmap) {
         if (isCancelled()) {
             bitmap = null;

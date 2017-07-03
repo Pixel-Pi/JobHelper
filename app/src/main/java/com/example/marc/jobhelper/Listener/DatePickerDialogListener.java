@@ -27,7 +27,7 @@ public class DatePickerDialogListener implements DatePickerDialog.OnDateSetListe
         try {
             date = sdf.parse(dayOfMonth + "/" + month + "/" + year);
         } catch (ParseException e) {
-            // handle exception here !
+
         }
 
         button.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(date));

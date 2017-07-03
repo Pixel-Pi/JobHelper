@@ -1,11 +1,8 @@
 package com.example.marc.jobhelper.Controller;
 
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ImageView;
 
-import com.example.marc.jobhelper.Model.ApplicationStatus;
 import com.example.marc.jobhelper.Model.Company;
 import com.example.marc.jobhelper.Model.DatabaseConnection;
 import com.example.marc.jobhelper.Model.MyAdapter;
@@ -25,11 +22,10 @@ public class CompanyListLoaderTask extends AsyncTask<String, Void, MyAdapter> {
     private  Company company;
 
     public CompanyListLoaderTask(RecyclerView recyclerView) {
-        recyclerViewReference = new WeakReference<RecyclerView>(recyclerView);
+        recyclerViewReference = new WeakReference<>(recyclerView);
     }
 
     @Override
-    // Actual download method, run in the task thread
     protected MyAdapter doInBackground(String... params) {
         DatabaseConnection dbc = DatabaseConnection.getInstance(MainActivity.getAppContext());
         List<Company> companies = dbc.loadAllCompaines();
@@ -58,7 +54,6 @@ public class CompanyListLoaderTask extends AsyncTask<String, Void, MyAdapter> {
     }
 
     @Override
-    // Once the image is downloaded, associates it to the imageView
     protected void onPostExecute(MyAdapter adapter) {
         if (isCancelled()) {
             return;
