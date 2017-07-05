@@ -76,7 +76,7 @@ class EditCompanyImageLoaderTask extends AsyncTask<String, Void, Bitmap> {
         }
         int color = Color.rgb((R / n), (G / n) , (B / n));
         double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
-        company.setContrastColor(y >= 128 ? Color.BLACK : Color.WHITE);
+        company.setContrastColor(y >= 64 ? Color.BLACK : Color.WHITE);
         return bitmap;
     }
 

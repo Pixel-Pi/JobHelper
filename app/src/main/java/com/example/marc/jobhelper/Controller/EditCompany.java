@@ -149,7 +149,7 @@ public class EditCompany extends AppCompatActivity {
                 DateFormat month = new SimpleDateFormat("MM");
                 DateFormat day = new SimpleDateFormat("dd");
                 Date compDate = company.getDate();
-                DatePickerDialog dpd = new DatePickerDialog(v.getContext(), new DatePickerDialogListener(dateInputButton), Integer.parseInt(year.format(compDate)), Integer.parseInt(month.format(compDate)), Integer.parseInt(day.format(compDate)));
+                DatePickerDialog dpd = new DatePickerDialog(v.getContext(), new DatePickerDialogListener(dateInputButton), Integer.parseInt(year.format(compDate)), Integer.parseInt(month.format(compDate)) - 1 , Integer.parseInt(day.format(compDate)));
                 dpd.show();
             }
         });
