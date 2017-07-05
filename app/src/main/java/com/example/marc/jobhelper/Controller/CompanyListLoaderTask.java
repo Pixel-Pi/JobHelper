@@ -14,17 +14,30 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * Taks für das asynchrone Laden der Vorschaulisten.
  * Created by marc on 27.06.17.
  */
 
 public class CompanyListLoaderTask extends AsyncTask<String, Void, MyAdapter> {
+    /**
+     * Referenz auf die RecyclerView in der die Liste angezeigt wird.
+     */
     private final WeakReference<RecyclerView> recyclerViewReference;
-    private  Company company;
 
+    /**
+     * Speichert die Referenz auf die RecyclerView.
+     * @param recyclerView RecyclerView
+     */
     public CompanyListLoaderTask(RecyclerView recyclerView) {
         recyclerViewReference = new WeakReference<>(recyclerView);
     }
 
+    /**
+     * Lädt alle Firmeneinträge aus der Datenbank und gleicht deren Status mit den in params gewünschten Stati ab.
+     * Danach werden die Einträge noch nach dem Index sortiert.
+     * @param params Die Stati, die gewünscht sind.
+     * @return Liste aus den CompanyItems, die angezeigt werden sollen.
+     */
     @Override
     protected MyAdapter doInBackground(String... params) {
         DatabaseConnection dbc = DatabaseConnection.getInstance(MainActivity.getAppContext());
@@ -41,7 +54,11 @@ public class CompanyListLoaderTask extends AsyncTask<String, Void, MyAdapter> {
                 }
             }
         }
+        //Falls leer, wird ein Dummy-Element hinzugefügt.
         if(myData.isEmpty()) myData.add(new MyAdapter.CompanyItem());
+
+        //Sortieren der Einträge nach Index.
+        //Hier kann auch nach anderen Kriterien sortiert werden.
         Collections.sort(myData, new Comparator<MyAdapter.CompanyItem>() {
             @Override
             public int compare(MyAdapter.CompanyItem comp1, MyAdapter.CompanyItem comp2)
@@ -53,6 +70,10 @@ public class CompanyListLoaderTask extends AsyncTask<String, Void, MyAdapter> {
         return new MyAdapter(myData);
     }
 
+    /**
+     * Zeigt die Liste an CompanyItems in der RecyclerView an.
+     * @param adapter Liste der CompanyItems
+     */
     @Override
     protected void onPostExecute(MyAdapter adapter) {
         if (isCancelled()) {

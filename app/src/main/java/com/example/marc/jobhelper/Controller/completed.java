@@ -11,20 +11,44 @@ import android.view.ViewGroup;
 import com.example.marc.jobhelper.Model.ApplicationStatus;
 import com.example.marc.jobhelper.R;
 
+/**
+ * Fragment, das alle erledigten Bewerbungen anzeigt. Hierzu zählen alle Company-Objekte, die den Status DENIED oder ACCEPTED haben.
+ */
 public class completed extends Fragment {
 
+    /**
+     * RecyclerView für die Liste an Firmen.
+     */
     private RecyclerView recyclerView;
+
+    /**
+     * Task zum laden der Liste.
+     */
     private CompanyListLoaderTask task;
 
+    /**
+     * Benötigter leerer Konstruktor
+     */
     public completed() {
         // Required empty public constructor
     }
 
+    /**
+     * Lädt die Liste an Companies erneut bei Wiederanzeigen des Fragments.
+     */
     @Override
     public void onResume() {
         super.onResume();
         reloadRecyclerView();
     }
+
+    /**
+     * Inflated die View und stellt die RecyclerView ein.
+     * @param inflater inflater
+     * @param container container
+     * @param savedInstanceState savedInstance
+     * @return View, die angezeigt wird.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -38,6 +62,10 @@ public class completed extends Fragment {
         return view;
     }
 
+    /**
+     * Lädt die Liste an Companies, die angezeigt wird.
+     * Companies müssen den Status ACCEPTED oder DENIED haben um angezeigt zu werden.
+     */
     public void reloadRecyclerView(){
         task = new CompanyListLoaderTask(recyclerView);
         String[] stati = {ApplicationStatus.ACCEPTED, ApplicationStatus.DENIED};

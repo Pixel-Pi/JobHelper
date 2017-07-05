@@ -18,12 +18,26 @@ import com.example.marc.jobhelper.Model.Company;
 import com.example.marc.jobhelper.Model.DatabaseConnection;
 import com.example.marc.jobhelper.R;
 
+/**
+ * Die MainActivity, die beim Starten der App angezeigt wird.
+ * Sie beinhaltet eine BottomnavigationView zum Wechseln der Fragments sowie einen Floating Action Button
+ * zum Erstellen eines neuen Eintrages.
+ * Außerdem holt sie sich die Runtime-Permission zum Lesen und Schreiben auf der SD-Karte, um später die
+ * Bilder und Thumbnails laden und erstellen zu können.
+ */
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Callback Nummer für die Anfrage auf Schreib- (und Lese-) berechtigung.
+     */
     private static final int WRITE_EXTERNAL_NUMBER = 1;
     private static Context context;
     private NavBarListener navBarListener = new NavBarListener(this);
 
+    /**
+     * Erfragt die Lese- und Schreibberechtigung für die SD-Karte und zeigt das mittlere Fragment an.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +75,12 @@ public class MainActivity extends AppCompatActivity {
         trans.commit();
     }
 
+    /**
+     * Callbackmethode für die Anfragen für Berechtigungen. Hier wird nur auf die Schreibberechtigung reagiert.
+     * @param requestCode Nummer um zu ermitteln welche Berechtigung gewährt wurde.
+     * @param permissions Rechte, die angefragt wurden.
+     * @param grantResults Rechte, die erteilt wurden.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -76,10 +96,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Kleine Methode, um den Kontext zu holen.
+     * @return Kontext der App
+     */
     public static Context getAppContext() {
         return MainActivity.context;
     }
 
+    /**
+     * Navigiert zu einem Fragment.
+     * @param fragment Fragment, das angezeigt werden soll.
+     */
     public void navigateToFragment(Fragment fragment) {
         FragmentManager FragMan = getFragmentManager();
         FragmentTransaction trans = FragMan.beginTransaction();

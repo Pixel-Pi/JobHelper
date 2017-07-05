@@ -7,7 +7,6 @@ import android.location.Address;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.example.marc.jobhelper.Controller.MainActivity;
@@ -22,6 +21,9 @@ import java.util.Locale;
 
 /**
  * Speichert die Daten zu einer Firma.
+ * Es wird alles soweit möglichst als Elementarer Datentyp gespeichert, um später beim Transformieren in ein
+ * Json keine Probleme zu bekommen.
+ * Bilder werden nicht direkt im Objekt gespeichert sondern nur deren Referenz.
  * Erstellt von Marc am 17.06.17.
  */
 
@@ -45,11 +47,26 @@ public class Company {
     private String thumbnailUri = "";
     private int contrastColor = Color.WHITE;
 
+    /**
+     * Erstellt eine Company mit Standartwerten.
+     */
     public Company(){
         index = NumberCompanies;
         NumberCompanies++;
     }
 
+    /**
+     * Erstellt eine Company mit den angegebenen parametern. Der Index wird automatisch berechnet.
+     * @param _companyName
+     * @param _jobTitle
+     * @param _status
+     * @param _date
+     * @param _address
+     * @param _contactPerson
+     * @param _website
+     * @param _phone
+     * @param _imgUri
+     */
     public Company(String _companyName, String _jobTitle, String _status, Date _date, String _address, String _contactPerson, Uri _website, String _phone, Uri _imgUri){
         if(!_companyName.equals("")) companyName = _companyName;
         if(!_jobTitle.equals("")) jobTitle = _jobTitle;
@@ -138,8 +155,8 @@ public class Company {
     }
 
     /**
-     * Creates a thumbnail.
-     * @return Thumbnail of imgUri
+     * Erstellt das Thumbnail für die Listenansichten.
+     * @return Thumbnail des Bildes, das unter imgUri zu finden ist.
      */
     private Bitmap thumbnailCreator(){
         if (imgUri.equals("")) return null;
@@ -169,6 +186,10 @@ public class Company {
 
     }
 
+    /**
+     * Löscht das Thumbnail, wenn es existent ist.
+     * @return True, wenn das Löschen geklappt hat.
+     */
     private boolean deleteThumbnail(){
         if (!thumbnailUri.equals("")) {
             File thumb = new File(thumbnailUri);
@@ -183,8 +204,8 @@ public class Company {
     }
 
     /**
-     * Checks, if thumbnail is available. Then tries to load it. If it still fails, it recreates a thumbnail.
-     * @return Thumbnail, of if inevitable the full bitmap.
+     * Überprüft ob ein Thumbnail vorhanden ist und lädt es. Falls es nicht vorhanden ist, wird es erstellt.
+     * @return Thumbnail oder falls es keines gibt null.
      */
 
     public Bitmap loadThumbnail() {
@@ -206,8 +227,8 @@ public class Company {
     }
 
     /**
-     * Loads the full Bitmap
-     * @return Logo of company
+     * Lädt die komplette Bitmap, die in imgUri zu finden ist.
+     * @return Die geladene Bitmap, falls es eine gibt. Sonst null.
      */
     public Bitmap loadBitmap() {
         if (ImagesAllowed) {

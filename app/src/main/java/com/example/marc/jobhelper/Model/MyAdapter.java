@@ -14,19 +14,26 @@ import com.example.marc.jobhelper.Controller.BitmapLoaderTask;
 import com.example.marc.jobhelper.Listener.RecyclerViewClickListener;
 import com.example.marc.jobhelper.R;
 
+/**
+ * Adapter, der für das Anzeigen der Listenelemente im RecyclerView in den planned, running und completed Fragmenten zustöndig ist.
+ */
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     private List<CompanyItem> mDataset;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
+    /**
+     * ViewHolder für je ein Listenelement.
+     */
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
+
         private TextView txtCompName;
         private TextView txtJobTitle;
         private TextView txtAppStatus;
         private ImageView img;
 
+        /**
+         * Speichert sich die einzelnen Anzeigelemente.
+         * @param v
+         */
         private ViewHolder(View v) {
             super(v);
             txtCompName = (TextView) v.findViewById(R.id.company_name);
@@ -36,6 +43,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         }
     }
 
+    /**
+     * Repräsentiert die Daten eines Listenelements.
+     */
     public static class CompanyItem {
 
         private int index;
@@ -46,16 +56,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         private String Status;
         private Uri imgUri;
 
+        /**
+         * Standardkonstruktor, erstellt Informationsitem
+         */
         public CompanyItem(){
             index = DatabaseConnection.DEFAULT_ID;
             company = null;
 
             CompanyName = "Keine Einträge";
             JobTitle = "Hier tippen für neuen Eintrag";
-            Status = "";
+            Status = " ";
             imgUri = Uri.parse("");
 
         }
+
+        /**
+         * Holt sich die Infos aus dem angegebenen Comapny Element und speichert sie.
+         * @param company
+         */
         public CompanyItem(Company company){
             this.company = company;
             CompanyName = company.getCompanyName();
@@ -65,15 +83,29 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             index = company.getIndex();
         }
 
+        /**
+         * Holt den Index dieses CompanyItems, der mit dem einer Company übereinstimmt.
+         * @return Index CompanyItem = Index Company
+         */
         public int getIndex(){return index;}
 
 
     }
 
+    /**
+     * Speichert die Liste aus CompanyItems
+     * @param myDataset List
+     */
     public MyAdapter(List<CompanyItem> myDataset) {
         mDataset = myDataset;
     }
 
+    /**
+     * Erstellt den ViewHolder
+     * @param parent Vater des ViewHolders
+     * @param viewType Nicht benötigt
+     * @return ViewHolder
+     */
     @Override
     public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.company_list_item, parent, false);
@@ -81,20 +113,25 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         return vh;
     }
 
+    /**
+     * Lädt die Items aus dem mDataset und setzt die Parameter ein.
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final CompanyItem item = mDataset.get(position);
-        holder.txtCompName.setText(mDataset.get(position).CompanyName);
-        holder.itemView.setOnClickListener(new RecyclerViewClickListener(mDataset.get(position).getIndex()));
-        holder.txtJobTitle.setText(mDataset.get(position).JobTitle);
+        holder.txtCompName.setText(item.CompanyName);
+        holder.itemView.setOnClickListener(new RecyclerViewClickListener(item.getIndex()));
+        holder.txtJobTitle.setText(item.JobTitle);
 
         String statusString = "Fehler";
-        switch (mDataset.get(position).Status) {
+        switch (item.Status) {
             case ApplicationStatus.PLANNED: statusString = "Geplant";
                 break;
             case ApplicationStatus.SENT: statusString = "Bewerbung abgesendet";
                 break;
-            case ApplicationStatus.INT_PLANNED: statusString = "Interview geplant am " + SimpleDateFormat.getDateInstance().format(mDataset.get(position).company.getDate());
+            case ApplicationStatus.INT_PLANNED: statusString = "Interview geplant am " + SimpleDateFormat.getDateInstance().format(item.company.getDate());
                 break;
             case ApplicationStatus.INT_HELD: statusString = "Interview gehalten";
                 break;
@@ -105,11 +142,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         }
         holder.txtAppStatus.setText(statusString);
         if(!mDataset.get(position).imgUri.toString().equals("")){
-            BitmapLoaderTask task = new BitmapLoaderTask(holder.img, mDataset.get(position).company);
+            BitmapLoaderTask task = new BitmapLoaderTask(holder.img, item.company);
             task.execute();
         };
     }
 
+    /**
+     * Gibt die Anzahl der Elemente in mDataset, und somit auch die Listenelemente zurück.
+     * @return Anzahl der Listenelemente.
+     */
     @Override
     public int getItemCount() {
         return mDataset.size();

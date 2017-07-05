@@ -32,16 +32,29 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     private static DatabaseConnection connection;
 
+    /**
+     * Gibt die Verbindung an die Datenbank nach dem Singleton-Pattern zurück.
+     * @param context Kontext der App
+     * @return DatabaseConnection
+     */
     public static DatabaseConnection getInstance(Context context){
         if(connection == null) connection = new DatabaseConnection(context);
         return connection;
     }
 
+    /**
+     * Stellt die Datenbankverbindung her.
+     * @param context Kontext der App
+     */
     private DatabaseConnection(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
 
+    /**
+     * Löscht die Tabelle und erstellt sie neu.
+     * @param db
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String DeleteCompanyTable = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -53,6 +66,12 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         db.execSQL(CreateCompanyTable);
     }
 
+    /**
+     * Wenn sich die Version der Datenbank ändert, wird alles gelöscht und neu erstellt.
+     * @param db
+     * @param oldVersion
+     * @param newVersion
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String DeleteCompanyTable = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -60,7 +79,12 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
-
+    /**
+     * Lädt eine Firma mit dem angegebenen Index. Eine Firma wird dabei aus dem Blob in der Datenbank
+     * zu einem Json transformiert und anschließend wieder zu einem Objekt.
+     * @param index Index der Firma
+     * @return Company
+     */
     public Company loadCompany(int index){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -79,6 +103,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         cursor.close();
         return gson.fromJson(json, new TypeToken<Company>() {}.getType());
     }
+
     /**
      * Alle Companies komplett aus der Datenbank holen, um hohe Reaktionsgeschwindigeit zu erhalten.
      * @return Liste die alle Objekte vom Typ Company beinhaltet.
@@ -105,6 +130,10 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Speichert die komplette Liste an Companies.
+     * @param companies
+     */
     public void saveCompanies(List<Company> companies){
         SQLiteDatabase db = this.getWritableDatabase();
         Gson gson = new Gson();
@@ -119,6 +148,12 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Löscht zuerst die Company beim Index ebendieser Company und speichert dann die neue Company an diese Stelle.
+     * Beim Speichern wird zuerst aus dem Objekt mittels Gson ein Json gemacht. Dieses Json wird dann als Blob
+     * in der Datenbank gespeichert.
+     * @param company
+     */
     public void addCompany(Company company) {
         this.removeCompanyAtIndex(company.getIndex());
         SQLiteDatabase db = this.getWritableDatabase();
@@ -130,6 +165,10 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Löscht den eintrag am angegebenen Index.
+     * @param index Stelle, die gelöscht werden soll.
+     */
     public void removeCompanyAtIndex(int index){
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, KEY_ID + " = ?", new String[]{String.valueOf(index)});

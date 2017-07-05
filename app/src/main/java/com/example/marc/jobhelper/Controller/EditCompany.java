@@ -36,11 +36,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Activity, die das Anzeigen, Bearbeiten und Erstellen eines Eintrages realisiert.
+ */
 public class EditCompany extends AppCompatActivity {
 
+    /**
+     * Callbacknumber, um zu definieren, dass ein Foto ausgewählt wurde.
+     */
     private static final int SELECT_PHOTO = 1;
-
-    public static final String DESCRIBABLE_KEY = "Toolbar";
 
     private Company company;
     private CollapsingToolbarLayout editCompanyToolbar;
@@ -55,6 +59,13 @@ public class EditCompany extends AppCompatActivity {
     private EditText websiteInput;
     private EditText phoneInput;
 
+    /**
+     * Holt alle Referenzen auf die Eingabefelder und lädt sich die Company mit der ID, die beim Intent mitgeliefert wurde.
+     * Wenn keine Firma angegeben wurde (ID=DEFAULT_ID), wird auch keine aus der Datenbank geladen.
+     * Wenn eine Firam angegeben wurde, wird versucht, sie aus der Datenbank zu laden und deren Eigentschaften dann in die Felder zu laden.
+     * Falls aus der Datenbank kein eintrag geladen werden kann, bleiben die Felder leer.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -185,6 +196,14 @@ public class EditCompany extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Callbackmethode, die aufgerufen wird, wenn ein Bild geladen wurde.
+     * Wenn alles passt, wird dieses Bild asynchron geladen.
+     * @param requestCode
+     * @param resultCode
+     * @param imageReturnedIntent
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -203,12 +222,26 @@ public class EditCompany extends AppCompatActivity {
                 }
         }
     }
+
+    /**
+     * Inflater für das Optionsmenü oben rechts.
+     * @param menu Das Menü, das inflated werden soll.
+     * @return Immer true.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_edit_company, menu);
         return true;
     }
 
+    /**
+     * Methode für das Reagieren auf gewähltes Item im Menü oben rechts.
+     * Beim Firmennamen-Bearbeiten-Button wird ein PopUp angezeigt
+     * Beim Firmenlogo-bearbeiten-Button wird ein Intent für die Auswahl eines Fotos gestarten.
+     * Beim Löschen-Button wird das aktuell geöffnete Item gelöscht.
+     * @param item gewähltes Item
+     * @return True, wenn alles geklappt hat.
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -231,6 +264,10 @@ public class EditCompany extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Zeigt den Titel der Firma in der Toolbar an.
+     * @param title Titel, der in der Toolbar angezeigt werden soll.
+     */
     public void setCompanyTitle(String title){
         editCompanyToolbar.setTitle(title);
     }

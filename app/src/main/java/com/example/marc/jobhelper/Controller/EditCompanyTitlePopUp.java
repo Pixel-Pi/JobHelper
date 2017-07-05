@@ -15,15 +15,22 @@ import android.widget.EditText;
 import com.example.marc.jobhelper.R;
 
 /**
+ * Popup für die Eingabe des Titels der Firma.
  * Created by marc on 25.06.17.
  */
 
 public class EditCompanyTitlePopUp extends DialogFragment {
 
-    private CollapsingToolbarLayout toolbar;
-
+    /**
+     * Leerer Konstruktor.
+     */
     public EditCompanyTitlePopUp(){}
 
+    /**
+     * Füllt das Popup mit dem entsprechenden Inhalt und Stellt im falle von "Speichern" den Titel der Firma ein.
+     * @param savedInstanceState
+     * @return Dialog, der angezeigt werden wird.
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = getActivity().getLayoutInflater();

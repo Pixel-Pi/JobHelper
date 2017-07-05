@@ -13,21 +13,49 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * Listener der auf die Auswahl eines Items im Spinner für die Stati in der EditCompany-Activity reagiert.
  * Created by marc on 02.07.17.
  */
 
 public class SpinnerListener implements AdapterView.OnItemSelectedListener{
 
-
+    /**
+     * Button für Datumseingabe.
+     */
     private Button dateInputButton;
+
+    /**
+     * Button für Zeiteingabe.
+     */
     private Button timeInputButton;
+
+    /**
+     * Company, die gerade geöffnet ist und deren Status geändert wird.
+     */
     private Company company;
 
+    /**
+     * Speichert sich die Referenzen auf die Objekte.
+     * @param company
+     * @param dateInputButton
+     * @param timeInputButton
+     */
     public SpinnerListener(Company company, Button dateInputButton, Button timeInputButton){
         this.company = company;
         this.dateInputButton = dateInputButton;
         this.timeInputButton = timeInputButton;
     }
+
+    /**
+     * Wird aufgerufen, wenn ein Item im Spinner ausgewählt wurde.
+     * Anschließend wird der Status der Firma eingestellt und das Entsprechende Datum geladen und auf den Buttons angezeigt.
+     * Wenn noch kein Datum eingegeben wurde, wird ein Platzhaltertext auf den Buttons angezeigt.
+     * Falls der Status "INT_HELD" ist, werden die Buttons ausgeblendet.
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(company == null) return;
@@ -54,6 +82,11 @@ public class SpinnerListener implements AdapterView.OnItemSelectedListener{
         }
     }
 
+    /**
+     * Wird aufgerufen, wenn kein Item ausgewählt wurde.
+     * Es passiert nichts.
+     * @param parent
+     */
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
