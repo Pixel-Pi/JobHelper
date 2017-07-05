@@ -94,8 +94,11 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         }
         catch(android.database.CursorIndexOutOfBoundsException ex){}
 
+
         if(cursor != null)
             if(!cursor.moveToFirst()) return null;
+
+        //Aus dem BLOB aus der Datenbank erst ein Json und dann wieder ein Objekt machen.
         byte[] blob = cursor.getBlob(cursor.getColumnIndex(KEY_BLOB));
         byte[] cutBlob = Arrays.copyOfRange(blob, 0,  blob.length-1);
         String json = new String(cutBlob);
@@ -117,6 +120,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         if(cursor != null){
             if(!cursor.moveToFirst()) return null;
             do{
+                //Aus BLOBs einen nach dem anderen wie oben Objekte machen und in der Liste speichern.
                 byte[] blob = cursor.getBlob(cursor.getColumnIndex(KEY_BLOB));
                 byte[] cutBlob = Arrays.copyOfRange(blob, 0,  blob.length-1);
                 String json = new String(cutBlob);
@@ -160,7 +164,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         Gson gson = new Gson();
         ContentValues values = new ContentValues();
         values.put(KEY_ID, company.getIndex());
-        values.put(KEY_BLOB, gson.toJson(company));
+        values.put(KEY_BLOB, gson.toJson(company)); //aus der Company ein Json machen und das als BLOB in der Datenbank speichern.
         db.insert(TABLE_NAME, null, values);
         db.close();
     }

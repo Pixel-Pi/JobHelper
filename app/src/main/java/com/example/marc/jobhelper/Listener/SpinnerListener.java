@@ -61,6 +61,7 @@ public class SpinnerListener implements AdapterView.OnItemSelectedListener{
         if(company == null) return;
         company.setStatus(ApplicationStatus.availableStati.get(position));
 
+        //Falls Interview gehalten wurde, Datums und Zeitbuttons ausblenden, weil die an der Stelle keine Information haben.f
         if(company.getStatus().equals(ApplicationStatus.INT_HELD)){
             dateInputButton.setVisibility(View.GONE);
             timeInputButton.setVisibility(View.GONE);

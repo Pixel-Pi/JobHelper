@@ -76,6 +76,7 @@ public class EditCompany extends AppCompatActivity {
         Intent i = getIntent();
         final int index = i.getIntExtra("ID", DatabaseConnection.DEFAULT_ID);
 
+        //Alle Views holen, in die Daten eingetragen werden.
         progressIndicator = (ProgressBar) findViewById(R.id.imageLoadingProgress);
         editCompanyToolbar = (CollapsingToolbarLayout) findViewById(R.id.editCompanyToolbar);
         jobTitleInput = (EditText) findViewById(R.id.jobTitleInput);
@@ -88,15 +89,17 @@ public class EditCompany extends AppCompatActivity {
         phoneInput = (EditText) findViewById(R.id.phoneInput);
         imageView = (ImageView) findViewById(R.id.companyLogo);
 
+        //Spinner mit Elementen füllen
         spinner = (Spinner) findViewById(R.id.statusSelect);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.appStati, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-
-
         editCompanyToolbar.setTitle("Neuer Eintrag");
+
         if(index != DatabaseConnection.DEFAULT_ID) {
+
+            //Company aus Datenbank laden und die Infos daraus in die Felder laden
             DatabaseConnection dbc = DatabaseConnection.getInstance(MainActivity.getAppContext());
             company = dbc.loadCompany(index);
             if(company == null) company = new Company();
@@ -109,6 +112,7 @@ public class EditCompany extends AppCompatActivity {
             editCompanyToolbar.setTitle(company.getCompanyName());
             jobTitleInput.setText(company.getJobTitle());
 
+            //Wievieltes Element im Spinner ausgewählt sein soll. (Geht bei Spinnern nicht anders)
             int j = 0;
             switch (company.getStatus()){
                 case ApplicationStatus.PLANNED: j=0;
@@ -140,7 +144,7 @@ public class EditCompany extends AppCompatActivity {
 
         spinner.setOnItemSelectedListener(new SpinnerListener(company, dateInputButton, timeInputButton));
 
-
+        //Date und Timepicker entsprechende Fenster öffnen bei Tippen
         dateInputButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,16 +170,19 @@ public class EditCompany extends AppCompatActivity {
             }
         });
 
+        //Speichernbutton die Fähigkeit geben, zu speichern.
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                //Daten aus den Feldern lesen und in das Company Element speichern
                 company.setCompanyName(editCompanyToolbar.getTitle().toString());
                 company.setJobTitle(jobTitleInput.getText().toString());
                 company.setStatus(ApplicationStatus.availableStati.get(spinner.getSelectedItemPosition()));
                 DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
                 Date convertedDate;
+                //Datum wieder aus der Angezeigten Version in ein Objekt vom Typ Datum zurückparsen.
                 try {
                     convertedDate = dateFormat.parse(dateInputButton.getText().toString() + " " + timeInputButton.getText().toString());
                     company.setDate(convertedDate);
@@ -245,17 +252,22 @@ public class EditCompany extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        //Firmenname ändern
         if (id == R.id.editCompanyButton) {
             EditCompanyTitlePopUp popUp = new EditCompanyTitlePopUp();
             popUp.show(getSupportFragmentManager(), getString(R.string.enterCompanyName));
             return true;
         }
+
+        //Logo ändern
         else if(id == R.id.editLogoButton) {
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
             startActivityForResult(photoPickerIntent, SELECT_PHOTO);
             return true;
         }
+
+        //Eintrag löschen
         else if(id == R.id.deleteButton){
             DatabaseConnection.getInstance(getApplicationContext()).removeCompanyAtIndex(company.getIndex());
             finish();

@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Berechtigung überprüfen und gegebenenfalls anfordern.
         int permissionCheck = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (!(permissionCheck == PackageManager.PERMISSION_GRANTED)) {
             if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             Company.setImagesAllowed(true);
         }
 
+        //Standartmäßig das running-Fragment anzeigen.
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(navBarListener);
         navigation.setSelectedItemId(R.id.navigation_running);

@@ -167,15 +167,21 @@ public class Company {
                 Environment.DIRECTORY_PICTURES);
         File imageFile = new File(path, fileName);
         try{
-
+            //.nomedia file anlegen
             if(imageFile.getParentFile().mkdirs()) new File(path, hiddenDirectory + ".nomedia").createNewFile();
             imageFile.createNewFile();
+
+            //Thumbnail erstellen und auf der SD-Karte speichern
             FileOutputStream out = new FileOutputStream(imageFile, false);
             final InputStream imageStream = MainActivity.getAppContext().getContentResolver().openInputStream(Uri.parse(imgUri));
             Bitmap resized = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeStream(imageStream), WIDTH, HEIGHT);
             resized.compress(Bitmap.CompressFormat.PNG, 90, out);
+
+            //Link zu Thumbnail im Objekt speichern
             thumbnailUri = imageFile.getAbsolutePath();
             System.out.println("ThumbnailPath: " + thumbnailUri);
+
+            //Company in der Datenbank speichern.
             DatabaseConnection.getInstance(MainActivity.getAppContext()).addCompany(this);
             out.close();
             return resized;

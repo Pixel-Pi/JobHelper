@@ -62,6 +62,7 @@ class EditCompanyImageLoaderTask extends AsyncTask<String, Void, Bitmap> {
         Bitmap bitmap = company.loadBitmap();
         Bitmap resized = ThumbnailUtils.extractThumbnail(bitmap, 500, 500);
 
+        //Rechnet den Farbwert aus
         int R = 0; int G = 0; int B = 0;
         int height = resized.getHeight();
         int width = resized.getWidth();
@@ -77,6 +78,8 @@ class EditCompanyImageLoaderTask extends AsyncTask<String, Void, Bitmap> {
         int color = Color.rgb((R / n), (G / n) , (B / n));
         double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
         company.setContrastColor(y >= 64 ? Color.BLACK : Color.WHITE);
+
+
         return bitmap;
     }
 
